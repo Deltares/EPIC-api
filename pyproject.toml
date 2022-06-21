@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "epic_backend"
+name = "epic_api"
 version = "0.28.0"
 description = "A Django REST Api backend for the Deltares EPIC Tool project"
 authors = ["Carles S. Soriano Pérez <carles.sorianoperez@deltares.nl>"]

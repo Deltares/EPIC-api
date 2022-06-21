@@ -1,5 +1,6 @@
 .django_secrets
 .django_debug
+db.sqlite3
 
 # Cached files
 __pycache__
