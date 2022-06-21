@@ -1,0 +1,9 @@
+.django_secrets
+.django_debug
+
+# Cached files
+__pycache__
+.pytest_cache
+
+# Editor directories and files
+.vscode
