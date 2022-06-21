@@ -1,3 +1,54 @@
+## v0.28.0 (2022-06-21)
+
+### Feat
+
+- downloadable reports (#75)
+- **epic_answers.py**: We now list a summary of selected programs
+- **views.py;serializers/report_serializer.py;models/epic_answers.py**: It is now possible to get a detailed summary of each question based on their (sub)type
+- **serializers/progress_serializer.py;views.py;urls.py**: Added end point from /api/program/id/progress to retrieve the progress for the current logged in epic user, added serializer and adapted tests
+- **epic_app/serializers/answer_serializer.py;epic_app/views.py**: We can now patch selected programs, adapted tests
+- **epic_app/views.py**: Edited partial_update to allow admin to change values
+- **views.py**: We now assign a valid serializer when creating answers from the endpoint /api/answer/
+- **views.py**: Streamlined get-list get-detail (get / retrieve) for answers. Adapted tests
+- **views.py**: API Client can now retrieve a serialized answer for a question without knowing either type
+- **views.py**: Added endpoint for flat questions
+- **generate_entity_admin.py**: Allow display of users in an organization
+- **epic_app/admin_models/generate_entity_admin.py**: We can now generate epic users from the organization page
+- **views.py;epic_user_serializer.py**: Added logic to update user's password
+- **epic_app/serializers/epic_user_serializer.py**: Added serializer for EpicOrganization. Adapted and extended related tests
+- **epic_app/models/epic_user.py**: Added organization as a model. Adapted setup and tests
+- **epic_app/admin.py;epic_app/models.py;epic_app/templates/**: Added simple logic to enable future CSV importing of Areas, added templates
+- **epic_app/models.py;epic_app/serializers.py;epic_app/views.py**: Added logic to serialize all data with their nested relationships
+- **epic_app/models.py**: Extended logic so that clusters can be made
+- **epic_app/admin.py**: Added relationships between area-group-program-question
+- **settings.py**: Added middleware CORS to allow ui / backend communication with the /api/ url
+- **epic_app/serializers.py**: Fixed posting answers through the browser regardless of the logged in user
+- **epic_app/serializers.py**: Now the users api browser will not display the password which will be validated and required on post
+- **epic_app/**: Changed serializers and views to require authentication for get / post data
+- **epic_app/models.py**: Replaced cross-reference tables with single Answer and two foreign keys; adapted views and serializers
+- **epic_core/urls.py**: Stable urls just for epicuser table
+- **epic_app/urls.py**: Added routing for the epic_app rest calls
+- **epic_app/views.py**: Added ViewSet for all the existing serialized models
+- **serializers.py**: Added JSON serializers
+- **migrations/models.py**: Created basic models and cross-reference tables to be modified in the admin page
+- **poetry**: Added poetry as package handler
+- Small markdown fix
+- Small markdown fix
+- Small markdown fix
+
+### Fix
+
+- **epic_app/importers/xlsx/**: improved import by delegating validation to each method for better error handling
+- **epic_app**: Removed outdated reference to previous serializers / views
+- **epic_app/admin.py**: Minor syntax fix
+- **epic_app/serializers.py**: Fixed usage of wrong fields in the serializers
+- **epic_app/serializers.py**: corrected typo
+
+### Refactor
+
+- **views.py;urls.py**: Removed previous 'questions' viewsets as the 'QuestionViewSet' replaces the whole set.
+- **epic_app/admin_models**: Moved admin models to different module for better maintenance of the django tree.
+
 ## v0.27.1 (2022-06-13)
 
 ## v0.27.0 (2022-06-01)
