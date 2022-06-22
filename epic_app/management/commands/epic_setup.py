@@ -41,12 +41,13 @@ class Command(BaseCommand):
         """
         Removes the current database.
         """
-        db_path = self.root_dir / "db.sqlite3"
-        if db_path.is_file():
-            self.stdout.write(
-                self.style.WARNING(f"Removing database file at {db_path}")
-            )
-            db_path.unlink()
+        call_command("flush", "--no-input")
+        # db_path = self.root_dir / "db.sqlite3"
+        # if db_path.is_file():
+        #     self.stdout.write(
+        #         self.style.WARNING(f"Removing database file at {db_path}")
+        #     )
+        #     db_path.unlink()
         self._remove_migrations()
         self.stdout.write(
             self.style.SUCCESS("Successfully cleaned up previous database structure.")
@@ -58,6 +59,9 @@ class Command(BaseCommand):
         """
         call_command("makemigrations")
         call_command("migrate")
+        self.stdout.write(
+            self.style.SUCCESS("Successfully migrated database structure.")
+        )
         call_command("import_epic_domain", domain_dir)
         if is_test:
             call_command("create_dummy_users")
