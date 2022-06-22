@@ -64,7 +64,8 @@ def answer_serializer_fixture(
         user=theonewhoasks,
         question=lkq,
     )
-    mca.selected_programs.add(Program.objects.all()[4], Program.objects.all()[2])
+    selected_programs = [Program.objects.all()[2], Program.objects.all()[4]]
+    mca.selected_programs.add(*selected_programs)
     return {
         YesNoAnswer: {
             "url": "http://testserver/api/answer/1/",
@@ -85,7 +86,7 @@ def answer_serializer_fixture(
         MultipleChoiceAnswer: {
             "id": mca.id,
             "question": lkq.id,
-            "selected_programs": [3, 5],
+            "selected_programs": [sp.id for sp in selected_programs],
             "url": "http://testserver/api/answer/3/",
             "user": theonewhoasks.id,
         },
@@ -187,4 +188,6 @@ class TestAnswerSerializer:
         # Verify final expectations.
         assert len(serialized_data) == 1
         for field, value in expected_data.items():
-            assert serialized_data[0][field] == value
+            assert (
+                serialized_data[0][field] == value
+            ), f"{field} not matching expectations."

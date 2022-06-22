@@ -56,7 +56,10 @@ class TestEpicUserSerializer:
         ):
             assert isinstance(epic_user_dict, dict)
             assert epic_user_dict["username"] == e_user
-            assert epic_user_dict["organization"] == 1
+            assert (
+                epic_user_dict["organization"]
+                == EpicOrganization.objects.get(name="Gallactic Empire").id
+            )
             assert epic_user_dict["is_advisor"] == is_advisor
 
         validate_epic_user_dict(serialized_data[0], "Palpatine", False)
@@ -76,7 +79,12 @@ class TestEpicOrganizationSerializer:
         expected_data = {
             "url": "http://testserver/api/epicorganization/1/",
             "name": "Gallactic Empire",
-            "organization_users": [2, 3, 4],
+            "organization_users": [
+                eu.id
+                for eu in EpicUser.objects.filter(
+                    organization__name="Gallactic Empire"
+                ).all()
+            ],
         }
         assert len(serialized_data) == 1
         assert serialized_data[0] == expected_data
