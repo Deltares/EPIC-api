@@ -111,12 +111,16 @@ WSGI_APPLICATION = "epic_core.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "epic_db",
-        "USER": "postgres",
-        "PASSWORD": "admin",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        # "NAME": "epic_db",
+        # "USER": "postgres",
+        # "PASSWORD": "admin",
+        # "HOST": "localhost",
+        # "PORT": "5432",
+        "OPTIONS": {
+            "service": ".pg_service.conf",
+            "passfile": ".pgpass",
+        },
     }
 }
 

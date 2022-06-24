@@ -1,10 +1,3 @@
-<!-- * [Installing on a CentOs machine](#installing-on-a-centos-machine)
-    * [Preparation](#preparation)
-    * [Installing SQLite3](#installing-sqlite3)
-    * [Installing Python3](#installing-python-39)
-    * [Installing Poetry](#installing-poetry)
-    * [References](#references) -->
-
 # Installing on a CentOs machine:
 In this section you will find the steps to follow in order to install the latest Python and SQLite versions in a CentOs machine. These steps are a summarized walk-through from the references listed in the [references section](#references).
 
@@ -26,6 +19,7 @@ In order to ensure the installation happens correctly it is better to first down
         sudo yum groupinstall "Development Tools" -y
 
 ## Installing SQLite3 (epic-api v.0.*)
+The following steps will guide you on how to set up SQLite3 on CentOs. However, this option is no longer supported from version >= v.1.0.0 of Epic-api.
 
 * Download source code:
 
@@ -55,7 +49,37 @@ In order to ensure the installation happens correctly it is better to first down
     > 3.38.5 2022-05-06 15:25:27 
 
 ## Installing PostgreSQL (epic-api v.1.*)
-...
+[Reference](https://www.hostinger.com/tutorials/how-to-install-postgresql-on-centos-7/)
+We will install PostgreSQL directly from CentOS repositories. To do so follow these steps once you are logged in your server.
+* Install PostgreSQL:
+        
+        sudo yum install postgresql-server postgresql-contrib
+
+* Initialize the Database
+
+        sudo postgresql-setup initdb
+
+* Start the database
+
+        sudo systemctl start postgresql
+
+Installation is complete. We can now proceed with the database configuration.
+
+### PostgreSQL setup
+Now we need to create the (empty) database to be used by the API, as well as to set a user and a password to access to it. Keep in mind a default user 'postgres' has been added to our linux system. We will be using it for this guideline.
+
+* Set a password for our 'postgres' user.
+
+        sudo passwd postgres
+
+* Create the database for the EPIC api. We will be using the name 'epic_db' across this guide.
+
+        psql postgres
+        createdb epic_db
+
+* You can now connect to the new database.
+        
+        psql testDB
 
 ## Installing Python 3.9
 
