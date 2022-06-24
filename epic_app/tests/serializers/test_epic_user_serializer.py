@@ -10,10 +10,11 @@ from epic_app.serializers.epic_user_serializer import (
     EpicUserSerializer,
 )
 from epic_app.tests.epic_db_fixture import epic_test_db
+from epic_app.tests import django_postgresql_db
 
 
 @pytest.fixture(autouse=True)
-@pytest.mark.django_db
+@django_postgresql_db
 def epic_user_serializer_fixture(
     epic_test_db: pytest.fixture,
 ):
@@ -38,7 +39,7 @@ def get_serializer():
 serializer_context = get_serializer()
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestEpicUserSerializer:
     def test_given_valid_instances_returns_expected_data(self):
         # Define context
@@ -67,7 +68,7 @@ class TestEpicUserSerializer:
         validate_epic_user_dict(serialized_data[2], "Dooku", True)
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestEpicOrganizationSerializer:
     def test_given_valid_instances_returns_expected_data(self):
         # Define context

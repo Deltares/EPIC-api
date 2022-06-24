@@ -24,7 +24,7 @@ from epic_app.models.epic_questions import (
 )
 from epic_app.models.epic_user import EpicOrganization, EpicUser
 from epic_app.models.models import Program
-from epic_app.tests import test_data_dir
+from epic_app.tests import django_postgresql_db, test_data_dir
 from epic_app.tests.epic_db_fixture import epic_test_db
 from epic_app.utils import get_submodel_type_list
 
@@ -45,7 +45,7 @@ def api_client() -> APIClient:
     return APIClient()
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 def get_admin_user() -> User:
     admin_user: User = User.objects.get(username="admin")
     assert admin_user.is_superuser
@@ -53,7 +53,7 @@ def get_admin_user() -> User:
     return admin_user
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 def get_epic_user(username: str) -> EpicUser:
     epic_user: EpicUser = EpicUser.objects.get(username=username)
     assert not epic_user.is_superuser
@@ -61,7 +61,7 @@ def get_epic_user(username: str) -> EpicUser:
     return epic_user
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 def set_user_auth_token(api_client: APIClient, username: str) -> str:
     epic_user = User.objects.get(username=username)
     assert epic_user
@@ -77,7 +77,7 @@ def admin_api_client(api_client: APIClient) -> APIClient:
     return api_client
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestEpicUserTokenAuthRequest:
     url_root = "/api/token-auth/"
 
@@ -140,7 +140,7 @@ class TestEpicUserTokenAuthRequest:
             assert response.data.get("token") is None
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestEpicUserViewSet:
     url_root = "/api/epicuser/"
 
@@ -289,7 +289,7 @@ class TestEpicUserViewSet:
             assert previous_pass != get_epic_user(find_username).password
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestEpicOrganizationViewSet:
     url_root = "/api/epicorganization/"
 
@@ -404,7 +404,7 @@ class TestEpicOrganizationViewSet:
         assert output_file.exists()
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestAreaViewSet:
     url_root = "/api/area/"
 
@@ -445,7 +445,7 @@ class TestAreaViewSet:
         assert len(response.data) == expected_entries
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestAgencyViewSet:
     url_root = "/api/agency/"
 
@@ -486,7 +486,7 @@ class TestAgencyViewSet:
         assert len(response.data) == expected_entries
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestGroupViewSet:
     url_root = "/api/group/"
 
@@ -527,7 +527,7 @@ class TestGroupViewSet:
         assert len(response.data) == expected_entries
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestProgramViewSet:
     url_root = "/api/program/"
     basic_user_fixture = [
@@ -666,7 +666,7 @@ class TestProgramViewSet:
             assert qa in _progress_fixture["questions_answers"]
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestQuestionViewSet:
     url_root = "/api/question/"
     q_subtypes = get_submodel_type_list(Question)
@@ -730,7 +730,7 @@ class TestQuestionViewSet:
         assert len(response.data) == len(EpicUser.objects.all())
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestAnswerViewSet:
     url_root = "/api/answer/"
     a_subtypes = get_submodel_type_list(Answer)
@@ -1016,7 +1016,7 @@ class TestAnswerViewSet:
         self._compare_answer_fields(changed_answer, json_data, lambda x, y: x == y)
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestApiDocumentation:
     url_root = "/api/docs/"
 
@@ -1033,7 +1033,7 @@ class TestApiDocumentation:
         assert response.status_code == 200
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestUrlUnavailableActions:
     @pytest.mark.parametrize(
         "url_root",

@@ -10,10 +10,11 @@ from epic_app.models.epic_questions import (
 )
 from epic_app.models.epic_user import EpicOrganization, EpicUser
 from epic_app.models.models import Agency, Area, Group, Program
+from epic_app.tests import django_postgresql_db
 
 
 @pytest.fixture(autouse=False)
-@pytest.mark.django_db
+@django_postgresql_db
 def epic_test_db():
     """
     Pytest automaticall sets and tears down this data for each test.

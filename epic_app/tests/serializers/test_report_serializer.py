@@ -29,11 +29,12 @@ from epic_app.serializers.report_serializer import (
     ProgramReportSerializer,
     QuestionReportSerializer,
 )
+from epic_app.tests import django_postgresql_db
 from epic_app.tests.epic_db_fixture import epic_test_db
 from epic_app.utils import get_submodel_type_list
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 def get_serializer():
     factory = APIRequestFactory()
     request = factory.get("/")
@@ -48,7 +49,7 @@ serializer_context = get_serializer()
 
 
 @pytest.fixture(autouse=False)
-@pytest.mark.django_db
+@django_postgresql_db
 def _report_serializer_fixture(
     epic_test_db: pytest.fixture,
 ) -> None:
@@ -73,7 +74,7 @@ def _report_serializer_fixture(
     mca.selected_programs.add(4, 2)
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestAnswerReportSerializer:
     def test_ctor(self):
         serializer = AnswerReportSerializer()
@@ -114,7 +115,7 @@ class TestAnswerReportSerializer:
         assert represented_data == self.expected_answer_dict[answer_type]
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestAnswerListReportSerializer:
 
     expected_answer_list_dict = {
@@ -183,7 +184,7 @@ class TestAnswerListReportSerializer:
         )
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestQuestionReportSerializer:
     def test_ctor(self):
         serializer = QuestionReportSerializer()
@@ -236,7 +237,7 @@ class TestQuestionReportSerializer:
         )
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestProgramReportSerializer:
     def test_ctor(self):
         serializer = ProgramReportSerializer()
