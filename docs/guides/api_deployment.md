@@ -1,11 +1,10 @@
-## Table of contents
-* [EpicApi deployment](#EpicApi-deployment)
+<!-- * [EpicApi deployment](#EpicApi-deployment)
     * [Checking requirements](#checking-requirements)
     * [Installing Django](#installing-django)
     * [Gunicorn run](#gunicorn-run)
     * [NGINX configuration](#nginx-configuration)
 * [Development setup](#development-setup)
-* [Production setup](#production-setup)
+* [Production setup](#production-setup) -->
 
 # EpicApi deployment
 To deploy the backend in an open environment we recommend following [Django guidelines](https://docs.djangoproject.com/en/4.0/howto/deployment/wsgi/gunicorn/) by using [gunicorn](https://docs.gunicorn.org/en/latest/install.html) and [NGINX](https://www.nginx.com/).
@@ -17,7 +16,7 @@ The following requirements should be met:
 * SQLite. At least version 3.9
 * Python. At least version 3.8
 
-Are you deploying on a CentOs machine? You can follow the [CentOs installation steps](#installing-on-a-centos-machine) for SQLite and Python in the [appendix section](#appendix).
+Are you deploying on a CentOs machine? You can follow the [CentOs installation steps](install_centos.md) for SQLite and Python in the [appendix section](#appendix).
 
 ## Checking requirements 
 It could be possible that your UNIX system does not have the latest python and/or SQLite versions. Please ensure you have installed Python (at least) 3.8 and SQLite (at least) 3.9.
