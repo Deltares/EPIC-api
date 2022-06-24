@@ -772,7 +772,7 @@ testutils = ["gitpython (>3)"]
 name = "pymdown-extensions"
 version = "9.5"
 description = "Extension pack for Python Markdown."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -1077,7 +1077,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "de9386090c272b6f5c70b07a0e1ae2d4f4cecb4bd047813a1f53c61427ca8225"
+content-hash = "94840fb4d32f3d2b3fd02d5727b398feac86c984054946553fca45c5fa410241"
 
 [metadata.files]
 aniso8601 = [
