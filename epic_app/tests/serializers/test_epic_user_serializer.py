@@ -9,8 +9,8 @@ from epic_app.serializers.epic_user_serializer import (
     EpicOrganizationSerializer,
     EpicUserSerializer,
 )
-from epic_app.tests.epic_db_fixture import epic_test_db
 from epic_app.tests import django_postgresql_db
+from epic_app.tests.epic_db_fixture import epic_test_db
 
 
 @pytest.fixture(autouse=True)
