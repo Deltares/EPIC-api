@@ -26,12 +26,13 @@ from epic_app.serializers.answer_serializer import (
     YesNoAnswerSerializer,
     _BaseAnswerSerializer,
 )
+from epic_app.tests import django_postgresql_db
 from epic_app.tests.epic_db_fixture import epic_test_db
 from epic_app.utils import get_submodel_type_list
 
 
 @pytest.fixture(autouse=False)
-@pytest.mark.django_db
+@django_postgresql_db
 def answer_serializer_fixture(
     epic_test_db: pytest.fixture,
 ):
@@ -105,7 +106,7 @@ def get_serializer():
 serializer_context = get_serializer()
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestAnswerSerializer:
     @pytest.mark.parametrize("answer_type", get_submodel_type_list(Answer))
     def test_get_concrete_serializer_registered_answer_subclasses_succeeds(
