@@ -55,6 +55,11 @@ We will install PostgreSQL directly from CentOS repositories. To do so follow th
         
         sudo yum install postgresql-server postgresql-contrib
 
+* Make sure the psycopg2 pre-requirements are met:
+
+        sudo yum install postgresql-libs
+        sudo yum install postgresql-devel
+
 * Initialize the Database
 
         sudo postgresql-setup initdb
