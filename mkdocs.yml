@@ -40,7 +40,8 @@ plugins:
 
       custom_templates: templates
       watch:
-        - src/core
+        - epic_app
+        - epic_core
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
