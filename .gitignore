@@ -1,7 +1,7 @@
 .django_secrets
 .django_debug
 db.sqlite3
-
+site/
 # Cached files
 __pycache__
 .pytest_cache

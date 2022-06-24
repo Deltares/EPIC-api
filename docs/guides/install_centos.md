@@ -1,3 +1,11 @@
+## Table of contents
+* [Installing on a CentOs machine](#installing-on-a-centos-machine)
+    * [Preparation](#preparation)
+    * [Installing SQLite3](#installing-sqlite3)
+    * [Installing Python3](#installing-python-39)
+    * [Installing Poetry](#installing-poetry)
+    * [References](#references)
+
 # Installing on a CentOs machine:
 In this section you will find the steps to follow in order to install the latest Python and SQLite versions in a CentOs machine. These steps are a summarized walk-through from the references listed in the [references section](#references).
 
