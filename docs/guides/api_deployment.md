@@ -24,25 +24,54 @@ Sometimes they are not found through your bash as they might not be parth of the
     alias python3="/usr/local/bin/python3.9"
 
 ## Setting up PostgreSQL
- Assuming you have already installed PostgreSQL, you will need to create a database, user and password to connect the `epic_api` to. We have described these steps already at the [Installing PostgreSQL](install_on_centos.md#installing-postgresql).
+Assuming you have already installed PostgreSQL, you will need to create a database, user and password to connect the `epic_api` to. We have described these steps already at the [Installing PostgreSQL](install_on_centos.md#installing-postgresql).
 
- After those steps are complete, we need to modify our `settings.py` file accordingly. This file is located in `epic_core/settings.py` and can be accessed with a text editor such as `vi` or `nano` in `Unix` machines.
+After those steps are complete, we need to specify our values for the `NAME`, `USER` and `PASSWORD` with the ones assigned during the postgresql.
 
-    vi epic_core/settings.py
+Let's have a look at  `epic_core/settings.py` which is read by `Django` to stablish the `PostgreSQL` database connection.
 
-In the file, we need to modify the values for the `NAME`, `USER` and `PASSWORD` with the ones assigned during the postgresql installation:
-```
+    cat /var/www/epic_core/settings.py
+
+```cli
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": "epic_db",
-            "USER": "postgres",
-            "PASSWORD": "postgres",
-            "HOST": "localhost",
-            "PORT": "5432",
+            "ENGINE": "django.db.backends.postgresql_psycopg2",  
+            "OPTIONS": {
+                "service": "epic_svc",
+            },
         }
     }
 ```
+
+As can be seen, `Django` expects a defined service named `epic_svc`. It will be specified as follows in an ini-file named `.pg_service.conf` which will be located at our own convenience in the project directory and lated exported as an `environment variable`.
+```cli
+    cd /var/www/epic-api
+    vi .pg_service.conf
+```
+> This file has a ini structure as defined in the [official documentation](https://www.postgresql.org/docs/current/libpq-pgservice.html)
+```ini
+[epic_svc]
+host=localhost
+user=postgres
+password=postgres
+dbname=epic_db
+port=5432
+```
+
+And we export its location:
+
+    export PGSERVICEFILE=/var/www/EPIC-api/.pg_service.conf
+
+<!-- We create as well a password file:
+```cli
+    cd /var/www/epic-api
+    vi .pgpass
+```
+ > This file follows the [official documentation](https://www.postgresql.org/docs/current/libpq-pgpass.html) standard
+ ```
+ localhost:5432:epic_db:postgres:postgres
+ ``` -->
+
 We should now be able to stablish a connection between the Django and the PostgreSQL server.
 
 ## Installing Django
