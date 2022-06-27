@@ -18,7 +18,9 @@ In order to ensure the installation happens correctly it is better to first down
         sudo yum -y install wget
         sudo yum groupinstall "Development Tools" -y
 
-## Installing SQLite3 (epic-api v.0.*)
+## Installing SQLite3
+> Supported from versions EPIC-api v.0.*
+
 The following steps will guide you on how to set up SQLite3 on CentOs. However, this option is no longer supported from version >= v.1.0.0 of Epic-api.
 
 * Download source code:
@@ -48,43 +50,51 @@ The following steps will guide you on how to set up SQLite3 on CentOs. However, 
     When running again the `sqlite3 -version` command you should see something like:
     > 3.38.5 2022-05-06 15:25:27 
 
-## Installing PostgreSQL (epic-api v.1.*)
-[Reference](https://www.hostinger.com/tutorials/how-to-install-postgresql-on-centos-7/)
+## Installing PostgreSQL 
+> Supported from versions EPPIC-api v.1.*
+
 We will install PostgreSQL directly from CentOS repositories. To do so follow these steps once you are logged in your server.
 * Install PostgreSQL:
         
-        sudo yum install postgresql-server postgresql-contrib
+        sudo yum install postgresql11-server
 
-* Make sure the psycopg2 pre-requirements are met:
+<!-- * Make sure the psycopg2 pre-requirements are met:
 
         sudo yum install postgresql-libs
-        sudo yum install postgresql-devel
+        sudo yum install postgresql-devel -->
 
 * Initialize the Database
 
-        sudo postgresql-setup initdb
+        sudo /usr/pgsql-11/bin/postgresql-11-setup initdb
 
 * Start the database
 
-        sudo systemctl start postgresql
+        sudo systemctl start postgresql-11
+        sudo systemctl enable postgresql-11
 
-Installation is complete. We can now proceed with the database configuration.
+
+Installation is complete, however we are still not ready to use the database server. We can now proceed with its configuration.
 
 ### PostgreSQL setup
-Now we need to create the (empty) database to be used by the API, as well as to set a user and a password to access to it. Keep in mind a default user 'postgres' has been added to our linux system. We will be using it for this guideline.
+Now we need to create the (empty) database to be used by the API, as well as to set a user and a password to access to it. Keep in mind a default user `postgres` has been added to our linux system. For this guide we will be using the following settings:
 
+```
+User: postgres
+Password: postgres
+Database: epic_db
+``` 
 * Set a password for our 'postgres' user.
 
-        sudo passwd postgres
+        sudo -u postgres psql
+        \password
 
 * Create the database for the EPIC api. We will be using the name 'epic_db' across this guide.
 
-        psql postgres
-        createdb epic_db
+        sudo -u postgres createdb epic_db
 
-* You can now connect to the new database.
-        
-        psql testDB
+We can now connect to `epic_db` with user `postgres`. Keep in mind you will need to specify this in the `epic_core/settings.py` file.
+
+__Note__: We have found out some issues with the `pga_hba.conf` file when connecting with the database. A working solution is to modify the file fron `ident` to `md5`. We fixed this based on the following [reference](https://stackoverflow.com/a/64596782).
 
 ## Installing Python 3.9
 
@@ -138,6 +148,8 @@ Now we need to create the (empty) database to be used by the API, as well as to 
     * [Installing Latest SQLite3](https://www.hostnextra.com/kb/how-to-install-sqlite3-on-centos-7/)
     * https://www.sqlite.org/2022/sqlite-autoconf-3380500.tar.gz
     > It might be good to replace the previous version of sqlite by moving it to a bak directory and renaming the latest one to the ‘sqlite3’. Taking over future invocations.
+* PostgreSQL:
+    * [Installing PostgreSQL 11 on CentOs]((https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-centos-7))
 * Python 3.9:
     * [Installing latest Python on CentOs](https://computingforgeeks.com/install-latest-python-on-centos-linux/)
     > It is also possible replacing the previous python3 version, as with SQLite3, moving the python 3.6 to a backup directory (python3.6.bak), this way the alias gets picked up always.

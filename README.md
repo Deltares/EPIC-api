@@ -2,6 +2,7 @@
 <a href="https://github.com/django/django"><img alt="Uses: Django" src="https://img.shields.io/badge/uses-django-000000.svg?style=for-the-badge&color=informational"></a>
 <a href="https://github.com/encode/django-rest-framework"><img alt="Uses: Django REST framework" src="https://img.shields.io/badge/uses-django_rest_framework-00000.svg?style=for-the-badge&color=informational"></a>
 <a href="https://github.com/adamchainz/django-cors-headers"><img alt="Uses: Django CORS headers" src="https://img.shields.io/badge/uses-django_cors_headers-000000.svg?style=for-the-badge&color=informational"></a>
+<a href="https://github.com/postgres/postgres"><img alt="Uses: PostgreSQL" src="https://img.shields.io/badge/uses-postgreSQL-000000.svg?style=for-the-badge&color=informational"></a>
 <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge"></a>
 
 ### Table of contents
@@ -57,7 +58,7 @@ To ensure everything gets picked up correctly you can execute the following comm
 ```cli
 export LD_LIBRARY_PATH="/usr/local/lib/"
 PATH=$PATH:/usr/local/bin
-alias sqlite3="/usr/local/bin/sqlite3"
+export PATH=$PATH:/usr/pgsql-11/bin:$PATH
 alias python3="/usr/local/bin/python3.9"
 ```
 In addition, poetry might require this extra step:
