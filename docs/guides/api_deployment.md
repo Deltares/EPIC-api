@@ -74,6 +74,8 @@ And we export its location:
 
 We should now be able to stablish a connection between the Django and the PostgreSQL server.
 
+> This step can be verified after installing Django by running the command `poetry run python manage.py check --database default`
+
 ## Installing Django
 
 * Checkout the root directory of the EPIC-api repository somewhere recognizable. Such as `/var/www/epicapi-site/`.
