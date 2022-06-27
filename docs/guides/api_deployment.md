@@ -8,7 +8,7 @@ The following requirements should be met from EPIC-api v.1.*:
 * __PostgreSQL__. At least version 10, we will install 11.
 * __Python 3__. At least version 3.8
 
-Are you deploying on a CentOs machine? You can follow the [CentOs installation steps](install_centos.md) for SQLite and Python in the [appendix section](#appendix).
+Are you deploying on a CentOs machine? You can follow the [CentOs installation steps](install_on_centos.md) for SQLite and Python in the [appendix section](#appendix).
 
 ## Checking requirements 
 It could be possible that your UNIX system does not have the latest python and/or SQLite versions. Please ensure you have installed Python (at least) 3.8 and PostgreSQL 11.
@@ -24,7 +24,7 @@ Sometimes they are not found through your bash as they might not be parth of the
     alias python3="/usr/local/bin/python3.9"
 
 ## Setting up PostgreSQL
- Assuming you have already installed PostgreSQL, you will need to create a database, user and password to connect the `epic_api` to. We have described these steps already at the [CentOs installation steps](install_centos.md#Installing-PostgreSQL).
+ Assuming you have already installed PostgreSQL, you will need to create a database, user and password to connect the `epic_api` to. We have described these steps already at the [Installing PostgreSQL](install_on_centos.md#installing-postgresql).
 
  After those steps are complete, we need to modify our `settings.py` file accordingly. This file is located in `epic_core/settings.py` and can be accessed with a text editor such as `vi` or `nano` in `Unix` machines.
 
