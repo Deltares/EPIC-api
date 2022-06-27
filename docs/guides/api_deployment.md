@@ -1,38 +1,53 @@
-<!-- * [EpicApi deployment](#EpicApi-deployment)
-    * [Checking requirements](#checking-requirements)
-    * [Installing Django](#installing-django)
-    * [Gunicorn run](#gunicorn-run)
-    * [NGINX configuration](#nginx-configuration)
-* [Development setup](#development-setup)
-* [Production setup](#production-setup) -->
-
 # EpicApi deployment
 To deploy the backend in an open environment we recommend following [Django guidelines](https://docs.djangoproject.com/en/4.0/howto/deployment/wsgi/gunicorn/) by using [gunicorn](https://docs.gunicorn.org/en/latest/install.html) and [NGINX](https://www.nginx.com/).
 
-The following requirements should be met:
+The following requirements should be met from EPIC-api v.1.*:
 
-* UNIX system.
-* NGINX. Already installed and configured.
-* SQLite. At least version 3.9
-* Python. At least version 3.8
+* __UNIX__ system.
+* __NGINX__. Already installed and configured.
+* __PostgreSQL__. At least version 10, we will install 11.
+* __Python 3__. At least version 3.8
 
 Are you deploying on a CentOs machine? You can follow the [CentOs installation steps](install_centos.md) for SQLite and Python in the [appendix section](#appendix).
 
 ## Checking requirements 
-It could be possible that your UNIX system does not have the latest python and/or SQLite versions. Please ensure you have installed Python (at least) 3.8 and SQLite (at least) 3.9.
-To check it do the following:
-```cli
-python3
->> import sqlite3
->> sqlite3.sqlite_version
+It could be possible that your UNIX system does not have the latest python and/or SQLite versions. Please ensure you have installed Python (at least) 3.8 and PostgreSQL 11.
+
+    postgres --version
+    python3 --version
+
+Sometimes they are not found through your bash as they might not be parth of the $PATH. To do so, run the following command.
+
+    export LD_LIBRARY_PATH="/usr/local/lib/"
+    PATH=$PATH:/usr/local/bin
+    export PATH=$PATH:/usr/pgsql-11/bin:$PATH
+    alias python3="/usr/local/bin/python3.9"
+
+## Setting up PostgreSQL
+ Assuming you have already installed PostgreSQL, you will need to create a database, user and password to connect the `epic_api` to. We have described these steps already at the [CentOs installation steps](install_centos.md#Installing-PostgreSQL).
+
+ After those steps are complete, we need to modify our `settings.py` file accordingly. This file is located in `epic_core/settings.py` and can be accessed with a text editor such as `vi` or `nano` in `Unix` machines.
+
+    vi epic_core/settings.py
+
+In the file, we need to modify the values for the `NAME`, `USER` and `PASSWORD` with the ones assigned during the postgresql installation:
 ```
-> * The first line will prompt us into the python3 CLI. Right below the executed line we will be able to see the current version of our Python3.
-> * The third line will display the associated version of SQLite with our Python build.
->   * If it does not return the expected value then we recommend recompiling your python binaries.
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": "epic_db",
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
+    }
+```
+We should now be able to stablish a connection between the Django and the PostgreSQL server.
 
 ## Installing Django
 
-* Checkout the root directory of the EPIC-api repository somewhere recognizable. Such as /var/www/epicapi-site/.
+* Checkout the root directory of the EPIC-api repository somewhere recognizable. Such as `/var/www/epicapi-site/`.
 * Navigate with the commandline to the previous checkout directory.
 * Define debug and secret key values:
     * Create a secret key through Python CLI
@@ -67,7 +82,7 @@ python3
         python3 manage.py collectstatic --noinput
         ```
         > It will install the .toml package in edit mode.
-* Run our custom command to create the database and add an admin user:
+* Run our custom command __ONLY WITH A FRESH FIRST CHECKOUT__ to create the database and add an admin user:
     * For development:
         ```cli
         poetry python manage.py epic_setup --test
@@ -116,6 +131,25 @@ server {
 }
 ```
 Now our NGINX server will be able to redirect our http calls to our application. As a last step, restart the NGINX server:
+
+    sudo systemctl restart nginx
+
+Or just a 'soft' reset:
+
+    sudo systemctl reload nginx
+
+
+## Appendix
+
+### Invoking the libraries:
+To ensure everything gets picked up correctly you can execute the following command lines:
 ```cli
-sudo systemctl restart nginx
+export LD_LIBRARY_PATH="/usr/local/lib/"
+PATH=$PATH:/usr/local/bin
+export PATH=$PATH:/usr/pgsql-11/bin:$PATH
+alias python3="/usr/local/bin/python3.9"
+```
+In addition, poetry might require this extra step:
+```cli
+export PATH="/root/.local/bin:$PATH"
 ```

@@ -18,7 +18,9 @@ In order to ensure the installation happens correctly it is better to first down
         sudo yum -y install wget
         sudo yum groupinstall "Development Tools" -y
 
-## Installing SQLite3 (epic-api v.0.*)
+## Installing SQLite3
+> Supported from versions EPIC-api v.0.*
+
 The following steps will guide you on how to set up SQLite3 on CentOs. However, this option is no longer supported from version >= v.1.0.0 of Epic-api.
 
 * Download source code:
@@ -48,7 +50,9 @@ The following steps will guide you on how to set up SQLite3 on CentOs. However, 
     When running again the `sqlite3 -version` command you should see something like:
     > 3.38.5 2022-05-06 15:25:27 
 
-## Installing PostgreSQL (epic-api v.1.*)
+## Installing PostgreSQL 
+> Supported from versions EPPIC-api v.1.*
+
 We will install PostgreSQL directly from CentOS repositories. To do so follow these steps once you are logged in your server.
 * Install PostgreSQL:
         
