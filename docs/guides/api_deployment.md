@@ -76,6 +76,14 @@ We should now be able to stablish a connection between the Django and the Postgr
 
 > This step can be verified after installing Django by running the command `poetry run python manage.py check --database default`
 
+### Alternative
+You may also create the `.pg_service.conf` at the expected 'global' location:
+
+    pg_config --sysconfdir
+    > /etc/somepath/to/pgsql
+    vi /etc/somepath/to/pgsql/.pg_service.conf
+
+
 ## Installing Django
 
 * Checkout the root directory of the EPIC-api repository somewhere recognizable. Such as `/var/www/epicapi-site/`.
