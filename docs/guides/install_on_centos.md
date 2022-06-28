@@ -1,8 +1,8 @@
-# Installing on a CentOs machine:
-In this section you will find the steps to follow in order to install the latest Python and SQLite versions in a CentOs machine. These steps are a summarized walk-through from the references listed in the [references section](#references).
+# Install on CentOS 7
+In this section you will find the steps to follow in order to install the latest Python and PostgreSQL versions in a CentOs machine. These steps are a summarized walk-through from the references listed in the [references section](#references).
 
 ## Preparation
-In order to ensure the installation happens correctly it is better to first download, compile and install SQLite3, this way we guarantee the follow-up [installation of Python](#installing-python-39) will pick up said latest version.
+In order to ensure the installation happens correctly it is better to first download, compile and install the required packages, this way we guarantee the follow-up [installation of Python](#installing-python-39) will pick up said latest version.
 
 * Do a system update:
 ```bash
@@ -13,7 +13,7 @@ sudo yum -y update
 ```bash
 sudo reboot
 ```
-* Install required packages (needed for both SQLite and Python):
+* Install required packages (needed for Python):
 ```bash 
 sudo yum -y install wget
 sudo yum groupinstall "Development Tools" -y
@@ -71,11 +71,6 @@ __Note__: We have found out some issues with the `pga_hba.conf` file when connec
 ```bash
 sudo yum install openssl-devel libffi-devel bzip2-devel -y
 ```
-* Export the libraries to ensure the [latest SQLite3](#installing-sqlite3) installed version gets picked up:
-```bash
-export LD_LIBRARY_PATH="/usr/local/lib/"
-alias sqlite3="/usr/local/bin/sqlite3"
-```
 * Download source code:
 ```bash
 cd /opt
@@ -95,10 +90,6 @@ sudo make altinstall
 python3 --version
 ```
 > Python 3.9.10
-```bash        
-python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
-```
-> 3.38.5
 
 If the latest step does not return at least that value you may need to recompile and install python ensuring the libraries are correctly exported as described in previous steps.
 
@@ -134,13 +125,9 @@ export PATH="/root/.local/bin:$PATH"
 ```
 
 ### References:
-* SQLite3:
-    * [Installing Latest SQLite3](https://www.hostnextra.com/kb/how-to-install-sqlite3-on-centos-7/)
-    * https://www.sqlite.org/2022/sqlite-autoconf-3380500.tar.gz
-    > It might be good to replace the previous version of sqlite by moving it to a bak directory and renaming the latest one to the ‘sqlite3’. Taking over future invocations.
 * PostgreSQL:
     * [Installing PostgreSQL 11 on CentOs]((https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-centos-7))
 * Python 3.9:
     * [Installing latest Python on CentOs](https://computingforgeeks.com/install-latest-python-on-centos-linux/)
-    > It is also possible replacing the previous python3 version, as with SQLite3, moving the python 3.6 to a backup directory (python3.6.bak), this way the alias gets picked up always.
+    > It is also possible replacing the previous python3 version, moving the python 3.6 to a backup directory (python3.6.bak), this way the alias gets picked up always.
 * (Extra) [Poetry official installer](https://python-poetry.org/docs/master/#installing-with-the-official-installer)

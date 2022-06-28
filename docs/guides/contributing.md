@@ -1,12 +1,13 @@
 If you wish to contribute to this project you may want to get familiar with our tooling. We strongly advise to get familiar with the following tools:
-* [poetry](https://python-poetry.org/) for package handler.
-* [black](https://black.readthedocs.io/en/stable/) for code styling.
-* [isort](https://github.com/PyCQA/isort) for code styling.
-* [commitizen](https://commitizen-tools.github.io/commitizen/) for version control.
-* [pytest](https://github.com/pytest-dev/pytest) for ensuring continuous integration of the tool.
+
+- [poetry](https://python-poetry.org/) for package handler.
+- [black](https://black.readthedocs.io/en/stable/) for code styling.
+- [isort](https://github.com/PyCQA/isort) for code styling.
+- [commitizen](https://commitizen-tools.github.io/commitizen/) for version control.
+- [pytest](https://github.com/pytest-dev/pytest) for ensuring continuous integration of the tool.
 
 # Getting your development environment ready.
-## Using pip:
+## Using pip
 Using `pip` in its latest version allows us to install the .toml file in edit mode. Keep in mind you will have to be running with python 3.8 (at least).
 ```bash
 cd /epic-api
@@ -22,7 +23,7 @@ poetry install
 poetry run
 ```
 
-## Using conda:
+## Using conda
 Regardless of installing through pip or poetry, we will still need to create our custom conda environment:
 ```bash
 cd /epic-api
