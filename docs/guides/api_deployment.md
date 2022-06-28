@@ -48,6 +48,8 @@ As can be seen, `Django` expects a defined service named `epic_svc`. It will be 
     cd /var/www/epic-api
     vi .pg_service.conf
 ```
+> __IMPORTANT!__ We encountered problems with the .conf file encoding. Please ensure the file is saved with `UTF-8` encoding.
+
 > This file has a ini structure as defined in the [official documentation](https://www.postgresql.org/docs/current/libpq-pgservice.html)
 ```ini
 [epic_svc]
