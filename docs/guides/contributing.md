@@ -101,5 +101,15 @@ Merging into `master` needs to be done through a pull-request. Please ensure the
 - [Commitizen has been run](#commitizen-version-control) to check for version bumping.
 - GitHub Pipelines succeed.
 
+## Updating EpicTool models.
+During development it is natural to create new tables or define new columns on a database entry. The most important is to manage the Django migrations with the following steps:
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+The new migrations should be included in the version control as the production server (as well as other contributors) will require them in order to preserve their existing database data.
+
+Also, keep in mind that if a new entity needs to be modified through the Django Admin page it will also have to be added into the admin.py page.
+
 # Licensing
 At the moment of writing of this document we have an [MIT](https://opensource.org/licenses/MIT) license. It is not intended to include packages or tools which require a more restrictive license or a payment in any form.
