@@ -1,3 +1,9 @@
+## v1.0.0 (2022-06-24)
+
+### Feat
+
+- postgresql replaces the previous sqlite database
+
 ## v0.28.0 (2022-06-21)
 
 ### Feat

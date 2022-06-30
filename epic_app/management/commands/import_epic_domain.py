@@ -74,7 +74,7 @@ class Command(BaseCommand):
         try:
             self._import_files(data_dir)
         except Exception as e_info:
-            call_command("flush")
+            call_command("flush", "--no-input")
             self.stdout.write(
                 self.style.ERROR(
                     f"Could not correctly import data, database will be empty on start. Detail error: {str(e_info)}."

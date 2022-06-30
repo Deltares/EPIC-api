@@ -9,7 +9,7 @@ from rest_framework.authtoken.models import Token
 
 
 class EpicOrganization(models.Model):
-    name: str = models.CharField(max_length=50)
+    name: str = models.CharField(max_length=250)
 
     def __str__(self) -> str:
         return self.name

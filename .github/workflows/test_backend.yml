@@ -9,8 +9,22 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.8]
-        os: [ubuntu-18.04, macos-latest, windows-latest]
+        # os: [ubuntu-18.04, macos-latest, windows-latest]
+        os: [ubuntu-18.04]
     runs-on: ${{ matrix.os }}
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: github_actions
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -65,6 +79,7 @@ jobs:
           git config --global user.name '${{ github.actor }}'
           git config --global user.email '${{ github.actor }}@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git fetch
           git checkout $GITHUB_HEAD_REF
           git commit -am "autoformat: isort & black" && git push || true
 

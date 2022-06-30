@@ -8,7 +8,7 @@ from epic_app.models import models as base_models
 
 class Question(models.Model):
 
-    title: str = models.CharField(null=False, blank=False, max_length=512)
+    title: str = models.TextField(null=False, blank=False)
     program: base_models.Program = models.ForeignKey(
         to=base_models.Program, on_delete=models.CASCADE, related_name="questions"
     )

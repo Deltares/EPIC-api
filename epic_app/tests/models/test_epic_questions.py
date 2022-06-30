@@ -66,10 +66,6 @@ class TestQuestion:
             with pytest.raises(IntegrityError) as e_info:
                 Question(title=q_title, program=q_program).save()
 
-        assert (
-            str(e_info.value)
-            == "UNIQUE constraint failed: epic_app_question.title, epic_app_question.program_id"
-        )
         assert Question.objects.filter(title=q_title, program=q_program).exists()
 
 

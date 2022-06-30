@@ -9,11 +9,12 @@ from epic_app.serializers.epic_user_serializer import (
     EpicOrganizationSerializer,
     EpicUserSerializer,
 )
+from epic_app.tests import django_postgresql_db
 from epic_app.tests.epic_db_fixture import epic_test_db
 
 
 @pytest.fixture(autouse=True)
-@pytest.mark.django_db
+@django_postgresql_db
 def epic_user_serializer_fixture(
     epic_test_db: pytest.fixture,
 ):
@@ -38,7 +39,7 @@ def get_serializer():
 serializer_context = get_serializer()
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestEpicUserSerializer:
     def test_given_valid_instances_returns_expected_data(self):
         # Define context
@@ -56,7 +57,10 @@ class TestEpicUserSerializer:
         ):
             assert isinstance(epic_user_dict, dict)
             assert epic_user_dict["username"] == e_user
-            assert epic_user_dict["organization"] == 1
+            assert (
+                epic_user_dict["organization"]
+                == EpicOrganization.objects.get(name="Gallactic Empire").id
+            )
             assert epic_user_dict["is_advisor"] == is_advisor
 
         validate_epic_user_dict(serialized_data[0], "Palpatine", False)
@@ -64,7 +68,7 @@ class TestEpicUserSerializer:
         validate_epic_user_dict(serialized_data[2], "Dooku", True)
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestEpicOrganizationSerializer:
     def test_given_valid_instances_returns_expected_data(self):
         # Define context
@@ -76,7 +80,12 @@ class TestEpicOrganizationSerializer:
         expected_data = {
             "url": "http://testserver/api/epicorganization/1/",
             "name": "Gallactic Empire",
-            "organization_users": [2, 3, 4],
+            "organization_users": [
+                eu.id
+                for eu in EpicUser.objects.filter(
+                    organization__name="Gallactic Empire"
+                ).all()
+            ],
         }
         assert len(serialized_data) == 1
         assert serialized_data[0] == expected_data

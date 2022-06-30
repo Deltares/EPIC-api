@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -51,7 +52,6 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "coreapi",
-    # "swagger-ui",
 ]
 
 # region Rest framework definitions
@@ -110,10 +110,24 @@ WSGI_APPLICATION = "epic_core.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "OPTIONS": {
+            "service": "epic_svc",
+        },
     }
 }
+
+if os.environ.get("GITHUB_WORKFLOW"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "github_actions",
+            "USER": "postgres",
+            "PASSWORD": "postgres",
+            "HOST": "127.0.0.1",
+            "PORT": "5432",
+        }
+    }
 
 
 # Password validation
@@ -150,7 +164,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_ROOT = "/var/www/html/ighcrm/static/"
+STATIC_ROOT = "/var/www/html/epic_api/static/"
 STATIC_URL = "static/"
 
 # Default primary key field type

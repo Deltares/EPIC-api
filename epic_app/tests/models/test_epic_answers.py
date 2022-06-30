@@ -341,8 +341,8 @@ class TestMultipleChoiceAnswer:
     @pytest.mark.parametrize(
         "selected_programs, expected_result",
         [
-            pytest.param([1], True, id="One selection"),
-            pytest.param([1, 2], True, id="Multiple selection"),
+            pytest.param(["a"], True, id="One selection"),
+            pytest.param(["a", "b"], True, id="Multiple selection"),
             pytest.param("", False, id="No selection"),
             pytest.param([], False, id="Empty selection"),
         ],
@@ -356,35 +356,39 @@ class TestMultipleChoiceAnswer:
         MultipleChoiceAnswer.objects.all().delete()
         a_lnk_question = LinkagesQuestion.objects.first()
         mca = MultipleChoiceAnswer.objects.create(user=an_user, question=a_lnk_question)
-        mca.selected_programs.set(selected_programs)
+        selected_ids = [
+            Program.objects.get(name=p_name).id for p_name in selected_programs
+        ]
+        mca.selected_programs.set(selected_ids)
         mca.save()
         assert mca.is_valid_answer() == expected_result
 
     @pytest.mark.parametrize(
         "selected_programs",
         [
-            pytest.param([1], id="One selection"),
-            pytest.param([1, 2], id="Multiple selection"),
+            pytest.param(["a"], id="One selection"),
+            pytest.param(["a", "b"], id="Multiple selection"),
             pytest.param("", id="No selection"),
             pytest.param([], id="Empty selection"),
         ],
     )
     def test_multiplechoiceanswer_get_detailed_summary(
         self,
-        selected_programs: Optional[List[int]],
+        selected_programs: Optional[List[str]],
     ):
         # Define test data.
         MultipleChoiceAnswer.objects.all().delete()
         mca = MultipleChoiceAnswer.objects.create(
             user=EpicUser.objects.first(), question=LinkagesQuestion.objects.first()
         )
-        mca.selected_programs.set(selected_programs)
+        selected_ids = [
+            Program.objects.get(name=p_name).id for p_name in selected_programs
+        ]
+        mca.selected_programs.set(selected_ids)
         mca.save()
 
         # Define expectations
-        expected_result = {
-            Program.objects.get(id=p_id).name: 1 for p_id in selected_programs
-        }
+        expected_result = {sp: 1 for sp in selected_programs}
         expected_result["no_valid_response"] = 0 if any(selected_programs) else 1
 
         # Run test

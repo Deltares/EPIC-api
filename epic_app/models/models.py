@@ -15,7 +15,7 @@ class Area(models.Model):
         models (models.Model): Derives directly from the base class Model.
     """
 
-    name: str = models.CharField(max_length=50)
+    name: str = models.CharField(max_length=250)
 
     def get_groups(self) -> List[Group]:
         """
@@ -32,7 +32,7 @@ class Area(models.Model):
 
 class Agency(models.Model):
 
-    name: str = models.CharField(max_length=50)
+    name: str = models.CharField(max_length=250)
 
     class Meta:
         verbose_name_plural = "Agencies"
@@ -58,7 +58,7 @@ class Group(models.Model):
         models (models.Model): Derives directly from the base class Model.
     """
 
-    name: str = models.CharField(max_length=50)
+    name: str = models.CharField(max_length=250)
     area: Area = models.ForeignKey(
         to=Area, on_delete=models.CASCADE, related_name="groups"
     )
@@ -85,11 +85,10 @@ class Program(models.Model):
     """
 
     name: str = models.CharField(
-        max_length=50,
+        max_length=250,
         unique=True,
     )
     description: str = models.TextField(
-        max_length=250,
         blank=False,
         null=False,
     )
@@ -99,8 +98,8 @@ class Program(models.Model):
     group: Group = models.ForeignKey(
         to=Group, on_delete=models.CASCADE, related_name="programs"
     )
-    reference_description = models.TextField(max_length=258, blank=True, null=True)
-    reference_link = models.URLField(max_length=128, blank=True)
+    reference_description = models.TextField(blank=True, null=True)
+    reference_link = models.URLField(blank=True)
 
     @staticmethod
     def check_unique_name(value: str):

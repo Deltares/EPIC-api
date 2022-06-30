@@ -26,12 +26,13 @@ from epic_app.serializers.answer_serializer import (
     YesNoAnswerSerializer,
     _BaseAnswerSerializer,
 )
+from epic_app.tests import django_postgresql_db
 from epic_app.tests.epic_db_fixture import epic_test_db
 from epic_app.utils import get_submodel_type_list
 
 
 @pytest.fixture(autouse=False)
-@pytest.mark.django_db
+@django_postgresql_db
 def answer_serializer_fixture(
     epic_test_db: pytest.fixture,
 ):
@@ -64,7 +65,8 @@ def answer_serializer_fixture(
         user=theonewhoasks,
         question=lkq,
     )
-    mca.selected_programs.add(Program.objects.all()[4], Program.objects.all()[2])
+    selected_programs = [Program.objects.all()[2], Program.objects.all()[4]]
+    mca.selected_programs.add(*selected_programs)
     return {
         YesNoAnswer: {
             "url": "http://testserver/api/answer/1/",
@@ -85,7 +87,7 @@ def answer_serializer_fixture(
         MultipleChoiceAnswer: {
             "id": mca.id,
             "question": lkq.id,
-            "selected_programs": [3, 5],
+            "selected_programs": [sp.id for sp in selected_programs],
             "url": "http://testserver/api/answer/3/",
             "user": theonewhoasks.id,
         },
@@ -104,7 +106,7 @@ def get_serializer():
 serializer_context = get_serializer()
 
 
-@pytest.mark.django_db
+@django_postgresql_db
 class TestAnswerSerializer:
     @pytest.mark.parametrize("answer_type", get_submodel_type_list(Answer))
     def test_get_concrete_serializer_registered_answer_subclasses_succeeds(
@@ -187,4 +189,6 @@ class TestAnswerSerializer:
         # Verify final expectations.
         assert len(serialized_data) == 1
         for field, value in expected_data.items():
-            assert serialized_data[0][field] == value
+            assert (
+                serialized_data[0][field] == value
+            ), f"{field} not matching expectations."

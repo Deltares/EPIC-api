@@ -1,7 +1,8 @@
 .django_secrets
 .django_debug
+.pg_service.conf
 db.sqlite3
-
+site/
 # Cached files
 __pycache__
 .pytest_cache

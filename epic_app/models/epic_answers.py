@@ -102,7 +102,7 @@ class Answer(models.Model):
 
 class YesNoAnswer(Answer):
     short_answer: str = models.CharField(
-        YesNoAnswerType.choices, max_length=50, blank=True
+        YesNoAnswerType.choices, max_length=250, blank=True
     )
     justify_answer: str = models.TextField(blank=True)
 
@@ -137,7 +137,7 @@ class YesNoAnswer(Answer):
 
 class SingleChoiceAnswer(Answer):
     selected_choice: str = models.CharField(
-        EvolutionChoiceType.choices, max_length=50, blank=True
+        EvolutionChoiceType.choices, max_length=250, blank=True
     )
     justify_answer: str = models.TextField(blank=True)
 
