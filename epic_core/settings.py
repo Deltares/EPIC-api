@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "coreapi",
-    # "swagger-ui",
 ]
 
 # region Rest framework definitions
@@ -165,7 +164,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_ROOT = "/var/www/html/ighcrm/static/"
+STATIC_ROOT = "/var/www/html/epic_api/static/"
 STATIC_URL = "static/"
 
 # Default primary key field type
