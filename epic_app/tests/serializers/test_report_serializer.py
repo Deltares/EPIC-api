@@ -83,7 +83,7 @@ class TestAnswerReportSerializer:
     expected_answer_dict = {
         AgreementAnswer: {
             "id": 1,
-            "selected_choice": "N",
+            "selected_choice": "DISAGREE",
             "justify_answer": "Laboris proident enim dolore ullamco voluptate nisi labore laborum ut qui adipisicing occaecat exercitation culpa.",
             "user": 3,
             "question": 1,
@@ -124,12 +124,18 @@ class TestAnswerListReportSerializer:
                 TestAnswerReportSerializer.expected_answer_dict[AgreementAnswer]
             ],
             "summary": {
-                "Yes": 0,
-                "Yes_justify": [],
-                "No": 1,
-                "No_justify": [
+                "Strongly_disagree": 0,
+                "Strongly_disagree_justify": [],
+                "Disagree": 1,
+                "Disagree_justify": [
                     "Laboris proident enim dolore ullamco voluptate nisi labore laborum ut qui adipisicing occaecat exercitation culpa."
                 ],
+                "Neither_agree_nor_disagree": 0,
+                "Neither_agree_nor_disagree_justify": [],
+                "Agree": 0,
+                "Agree_justify": [],
+                "Strongly_agree": 0,
+                "Strongly_agree_justify": [],
                 "no_valid_response": 2,
             },
         },

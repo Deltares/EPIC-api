@@ -896,18 +896,18 @@ class TestAnswerViewSet:
             pytest.param(
                 dict(
                     question="1",
-                    selected_choice="Y",
+                    selected_choice="NAND",
                     justify_answer="Deserunt et velit ad occaecat qui.",
                 ),
-                id="YesNo [National Framework] answer",
+                id="Agreement [National Framework] answer",
             ),
             pytest.param(
                 dict(
                     question="6",
-                    selected_choice="N",
+                    selected_choice="SDIS",
                     justify_answer="Deserunt et velit ad occaecat qui.",
                 ),
-                id="YesNo [Key Agency Actions] answer",
+                id="Agreement [Key Agency Actions] answer",
             ),
             pytest.param(
                 dict(question="3", selected_choice=str(EvolutionChoiceType.ENGAGED)),

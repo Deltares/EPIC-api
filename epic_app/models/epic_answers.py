@@ -119,21 +119,22 @@ class AgreementAnswer(Answer):
 
     @staticmethod
     def get_detailed_summary(answers_list: List[AgreementAnswer]) -> Dict[str, Any]:
-        def _yesno_type_summary(filter_type: AgreementAnswerType) -> Dict[str, Any]:
+        def _agreement_type_summary(filter_type: AgreementAnswerType) -> Dict[str, Any]:
             filter_query = answers_list.filter(selected_choice=filter_type)
+            label = str(filter_type.label).strip().replace(" ", "_")
             return {
-                filter_type.label: len(filter_query),
-                f"{filter_type.label}_justify": [
+                label: len(filter_query),
+                f"{label}_justify": [
                     fq.justify_answer for fq in filter_query.all() if fq.justify_answer
                 ],
             }
 
         return {
-            **_yesno_type_summary(AgreementAnswerType.SDIS),
-            **_yesno_type_summary(AgreementAnswerType.DIS),
-            **_yesno_type_summary(AgreementAnswerType.NAND),
-            **_yesno_type_summary(AgreementAnswerType.AGR),
-            **_yesno_type_summary(AgreementAnswerType.SAGR),
+            **_agreement_type_summary(AgreementAnswerType.SDIS),
+            **_agreement_type_summary(AgreementAnswerType.DIS),
+            **_agreement_type_summary(AgreementAnswerType.NAND),
+            **_agreement_type_summary(AgreementAnswerType.AGR),
+            **_agreement_type_summary(AgreementAnswerType.SAGR),
             **dict(
                 no_valid_response=len(
                     [al for al in answers_list.all() if not al.is_valid_answer()]
