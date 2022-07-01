@@ -9,9 +9,9 @@ from epic_app.admin_models.import_entity_admin import (
     NfqAdmin,
 )
 from epic_app.models.epic_answers import (
-    MultipleChoiceAnswer,
-    EvolutionAnswer,
     AgreementAnswer,
+    EvolutionAnswer,
+    MultipleChoiceAnswer,
 )
 from epic_app.models.epic_questions import (
     EvolutionQuestion,

@@ -4,10 +4,10 @@ from rest_framework import serializers
 
 from epic_app.models.epic_answers import (
     AgreementAnswer,
+    AgreementAnswerType,
     Answer,
     EvolutionAnswer,
     MultipleChoiceAnswer,
-    AgreementAnswerType,
 )
 from epic_app.models.epic_questions import EvolutionChoiceType
 from epic_app.utils import get_instance_as_submodel_type
