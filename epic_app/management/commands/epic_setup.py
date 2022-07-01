@@ -62,6 +62,7 @@ class Command(BaseCommand):
             call_command("create_dummy_users")
 
     def handle(self, *args: Any, **options: Any) -> Optional[str]:
+        self.stdout.write("INFO: {}".format(options["test"]))
         try:
             self._cleanup_db()
             self._migrate_db(options["default_files"], options["test"])
