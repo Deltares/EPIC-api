@@ -8,11 +8,11 @@ from django.http import FileResponse
 from rest_framework.test import APIClient
 
 from epic_app.models.epic_answers import (
+    AgreementAnswer,
+    AgreementAnswerType,
     Answer,
+    EvolutionAnswer,
     MultipleChoiceAnswer,
-    SingleChoiceAnswer,
-    YesNoAnswer,
-    YesNoAnswerType,
 )
 from epic_app.models.epic_questions import (
     EvolutionChoiceType,
@@ -309,12 +309,12 @@ class TestEpicOrganizationViewSet:
 
         for nfq in NationalFrameworkQuestion.objects.all():
             # We will fill the answers for these ones.
-            yna, _ = YesNoAnswer.objects.get_or_create(
-                user=e_user, question=nfq, short_answer=YesNoAnswerType.YES
+            aga, _ = AgreementAnswer.objects.get_or_create(
+                user=e_user, question=nfq, selected_choice=AgreementAnswerType.AGR
             )
-            answers.append(get_qa(nfq.id, yna.id))
+            answers.append(get_qa(nfq.id, aga.id))
         for eq in EvolutionQuestion.objects.all():
-            sca, _ = SingleChoiceAnswer.objects.get_or_create(user=e_user, question=eq)
+            sca, _ = EvolutionAnswer.objects.get_or_create(user=e_user, question=eq)
             answers.append(get_qa(eq.id, sca.id))  # Empty answer
         for kaa in KeyAgencyActionsQuestion.objects.all():
             answers.append(get_qa(kaa.id, None))
@@ -622,12 +622,12 @@ class TestProgramViewSet:
         answers = []
         for nfq in NationalFrameworkQuestion.objects.all():
             # We will fill the answers for these ones.
-            yna, _ = YesNoAnswer.objects.get_or_create(
-                user=e_user, question=nfq, short_answer=YesNoAnswerType.YES
+            yna, _ = AgreementAnswer.objects.get_or_create(
+                user=e_user, question=nfq, selected_choice=AgreementAnswerType.AGR
             )
             answers.append(get_qa(nfq.id, yna.id))
         for eq in EvolutionQuestion.objects.all():
-            sca, _ = SingleChoiceAnswer.objects.get_or_create(user=e_user, question=eq)
+            sca, _ = EvolutionAnswer.objects.get_or_create(user=e_user, question=eq)
             answers.append(get_qa(eq.id, sca.id))  # Empty answer
         for kaa in KeyAgencyActionsQuestion.objects.all():
             answers.append(get_qa(kaa.id, None))
@@ -763,13 +763,13 @@ class TestAnswerViewSet:
     @pytest.fixture
     def _answers_fixture(self) -> dict:
         self.anakin = EpicUser.objects.filter(username="Anakin").first()
-        self.yna = YesNoAnswer.objects.create(
+        self.yna = AgreementAnswer.objects.create(
             user=self.anakin,
             question=Question.objects.filter(pk=1).first(),
-            short_answer=YesNoAnswerType.NO,
+            selected_choice=AgreementAnswerType.AGR,
             justify_answer="Laboris proident enim dolore ullamco voluptate nisi labore laborum ut qui adipisicing occaecat exercitation culpa.",
         )
-        self.sca = SingleChoiceAnswer.objects.create(
+        self.sca = EvolutionAnswer.objects.create(
             user=self.anakin,
             question=Question.objects.filter(pk=3).first(),
             selected_choice=EvolutionChoiceType.EFFECTIVE,
@@ -782,15 +782,15 @@ class TestAnswerViewSet:
         self.mca.save()
         self.mca.selected_programs.add(4, 2)
         return {
-            YesNoAnswer: {
+            AgreementAnswer: {
                 "url": "http://testserver/api/answer/1/",
                 "id": 1,
                 "user": 3,
                 "question": 1,
-                "short_answer": "N",
+                "selected_choice": str(AgreementAnswerType.AGR),
                 "justify_answer": "Laboris proident enim dolore ullamco voluptate nisi labore laborum ut qui adipisicing occaecat exercitation culpa.",
             },
-            SingleChoiceAnswer: {
+            EvolutionAnswer: {
                 "url": "http://testserver/api/answer/2/",
                 "id": 2,
                 "user": 3,
@@ -810,10 +810,10 @@ class TestAnswerViewSet:
     update_patch_params = [
         pytest.param(
             {
-                YesNoAnswer: dict(
-                    short_answer="",
+                AgreementAnswer: dict(
+                    selected_choice="",
                 ),
-                SingleChoiceAnswer: dict(
+                EvolutionAnswer: dict(
                     selected_choice="",
                 ),
                 MultipleChoiceAnswer: dict(selected_programs=[]),
@@ -822,11 +822,11 @@ class TestAnswerViewSet:
         ),
         pytest.param(
             {
-                YesNoAnswer: dict(
-                    short_answer=str(YesNoAnswerType.YES),
+                AgreementAnswer: dict(
+                    selected_choice=str(AgreementAnswerType.AGR),
                     justify_answer="For my own reasons",
                 ),
-                SingleChoiceAnswer: dict(
+                EvolutionAnswer: dict(
                     selected_choice=str(EvolutionChoiceType.ENGAGED),
                     justify_answer="For the lulz",
                 ),
@@ -896,18 +896,18 @@ class TestAnswerViewSet:
             pytest.param(
                 dict(
                     question="1",
-                    short_answer="Y",
+                    selected_choice=str(AgreementAnswerType.DIS),
                     justify_answer="Deserunt et velit ad occaecat qui.",
                 ),
-                id="YesNo [National Framework] answer",
+                id="Agreement [National Framework] answer",
             ),
             pytest.param(
                 dict(
                     question="6",
-                    short_answer="N",
+                    selected_choice=str(AgreementAnswerType.SDIS),
                     justify_answer="Deserunt et velit ad occaecat qui.",
                 ),
-                id="YesNo [Key Agency Actions] answer",
+                id="Agreement [Key Agency Actions] answer",
             ),
             pytest.param(
                 dict(question="3", selected_choice=str(EvolutionChoiceType.ENGAGED)),

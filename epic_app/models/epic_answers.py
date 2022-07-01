@@ -5,6 +5,7 @@ from collections import Counter
 from typing import Any, Dict, List, Union
 
 from django.db import IntegrityError, models
+from django.utils.translation import gettext_lazy as _
 
 from epic_app.models import models as base_models
 from epic_app.models.epic_questions import (
@@ -18,9 +19,12 @@ from epic_app.models.epic_questions import (
 from epic_app.models.epic_user import EpicUser
 
 
-class YesNoAnswerType(models.TextChoices):
-    YES = "Y", ("Yes")
-    NO = "N", ("No")
+class AgreementAnswerType(models.TextChoices):
+    SDIS = "STRONGLYDISAGREE", _("Strongly disagree")
+    DIS = "DISAGREE", _("Disagree")
+    NAND = "NEITHERAGREENORDISAGREE", _("Neither agree nor disagree")
+    AGR = "AGREE", _("Agree")
+    SAGR = "STRONGLYAGREE", _("Strongly agree")
 
 
 class Answer(models.Model):
@@ -100,9 +104,9 @@ class Answer(models.Model):
         )
 
 
-class YesNoAnswer(Answer):
-    short_answer: str = models.CharField(
-        YesNoAnswerType.choices, max_length=250, blank=True
+class AgreementAnswer(Answer):
+    selected_choice: str = models.CharField(
+        AgreementAnswerType.choices, max_length=250, blank=True
     )
     justify_answer: str = models.TextField(blank=True)
 
@@ -111,22 +115,26 @@ class YesNoAnswer(Answer):
         return [NationalFrameworkQuestion, KeyAgencyActionsQuestion]
 
     def is_valid_answer(self) -> bool:
-        return self.short_answer in YesNoAnswerType
+        return self.selected_choice in AgreementAnswerType
 
     @staticmethod
-    def get_detailed_summary(answers_list: List[YesNoAnswer]) -> Dict[str, Any]:
-        def _yesno_type_summary(filter_type: YesNoAnswerType) -> Dict[str, Any]:
-            filter_query = answers_list.filter(short_answer=filter_type)
+    def get_detailed_summary(answers_list: List[AgreementAnswer]) -> Dict[str, Any]:
+        def _agreement_type_summary(filter_type: AgreementAnswerType) -> Dict[str, Any]:
+            filter_query = answers_list.filter(selected_choice=filter_type)
+            label = str(filter_type.label).strip().replace(" ", "_")
             return {
-                filter_type.label: len(filter_query),
-                f"{filter_type.label}_justify": [
+                label: len(filter_query),
+                f"{label}_justify": [
                     fq.justify_answer for fq in filter_query.all() if fq.justify_answer
                 ],
             }
 
         return {
-            **_yesno_type_summary(YesNoAnswerType.YES),
-            **_yesno_type_summary(YesNoAnswerType.NO),
+            **_agreement_type_summary(AgreementAnswerType.SDIS),
+            **_agreement_type_summary(AgreementAnswerType.DIS),
+            **_agreement_type_summary(AgreementAnswerType.NAND),
+            **_agreement_type_summary(AgreementAnswerType.AGR),
+            **_agreement_type_summary(AgreementAnswerType.SAGR),
             **dict(
                 no_valid_response=len(
                     [al for al in answers_list.all() if not al.is_valid_answer()]
@@ -135,7 +143,7 @@ class YesNoAnswer(Answer):
         }
 
 
-class SingleChoiceAnswer(Answer):
+class EvolutionAnswer(Answer):
     selected_choice: str = models.CharField(
         EvolutionChoiceType.choices, max_length=250, blank=True
     )
@@ -157,7 +165,7 @@ class SingleChoiceAnswer(Answer):
 
     @staticmethod
     def get_detailed_summary(
-        answers_list: Union[models.QuerySet, List[YesNoAnswer]]
+        answers_list: Union[models.QuerySet, List[EvolutionAnswer]]
     ) -> Dict[str, Any]:
         def _single_choice_summary(filter_type: EvolutionChoiceType) -> Dict[str, Any]:
             filter_query = answers_list.filter(selected_choice=filter_type)
@@ -195,7 +203,7 @@ class MultipleChoiceAnswer(Answer):
         return any(self.selected_programs.all())
 
     @staticmethod
-    def get_detailed_summary(answers_list: List[YesNoAnswer]) -> Dict[str, Any]:
+    def get_detailed_summary(answers_list: List[AgreementAnswer]) -> Dict[str, Any]:
         all_sp = {
             p.name: p_count
             for p, p_count in dict(
