@@ -823,7 +823,7 @@ class TestAnswerViewSet:
         pytest.param(
             {
                 AgreementAnswer: dict(
-                    selected_choice=str(AgreementAnswerType.AGR),
+                    selected_choice=str(AgreementAnswerType.NAND),
                     justify_answer="For my own reasons",
                 ),
                 EvolutionAnswer: dict(

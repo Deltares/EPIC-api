@@ -322,25 +322,28 @@ class TestAgreementAnswer:
         def _get_justify(ag_type) -> List[Optional[str]]:
             return [justify] if selected_choice == ag_type else []
 
+        def get_label(ag_type) -> str:
+            return ag_type.label.replace(" ", "_")
+
         expected_result = {
-            str(AgreementAnswerType.SDIS.label): _get_result(AgreementAnswerType.SDIS),
-            f"{str(AgreementAnswerType.SDIS.label)}_justify": _get_justify(
+            get_label(AgreementAnswerType.SDIS): _get_result(AgreementAnswerType.SDIS),
+            f"{get_label(AgreementAnswerType.SDIS)}_justify": _get_justify(
                 AgreementAnswerType.SDIS
             ),
-            str(AgreementAnswerType.DIS.label): _get_result(AgreementAnswerType.DIS),
-            f"{str(AgreementAnswerType.DIS.label)}_justify": _get_justify(
+            get_label(AgreementAnswerType.DIS): _get_result(AgreementAnswerType.DIS),
+            f"{get_label(AgreementAnswerType.DIS)}_justify": _get_justify(
                 AgreementAnswerType.DIS
             ),
-            str(AgreementAnswerType.NAND.label): _get_result(AgreementAnswerType.NAND),
-            f"{str(AgreementAnswerType.NAND.label)}_justify": _get_justify(
+            get_label(AgreementAnswerType.NAND): _get_result(AgreementAnswerType.NAND),
+            f"{get_label(AgreementAnswerType.NAND)}_justify": _get_justify(
                 AgreementAnswerType.NAND
             ),
-            str(AgreementAnswerType.AGR.label): _get_result(AgreementAnswerType.AGR),
-            f"{str(AgreementAnswerType.AGR.label)}_justify": _get_justify(
+            get_label(AgreementAnswerType.AGR): _get_result(AgreementAnswerType.AGR),
+            f"{get_label(AgreementAnswerType.AGR)}_justify": _get_justify(
                 AgreementAnswerType.AGR
             ),
-            str(AgreementAnswerType.SAGR.label): _get_result(AgreementAnswerType.SAGR),
-            f"{str(AgreementAnswerType.SAGR.label)}_justify": _get_justify(
+            get_label(AgreementAnswerType.SAGR): _get_result(AgreementAnswerType.SAGR),
+            f"{get_label(AgreementAnswerType.SAGR)}_justify": _get_justify(
                 AgreementAnswerType.SAGR
             ),
             "no_valid_response": 0,
