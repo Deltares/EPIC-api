@@ -309,10 +309,10 @@ class TestEpicOrganizationViewSet:
 
         for nfq in NationalFrameworkQuestion.objects.all():
             # We will fill the answers for these ones.
-            yna, _ = AgreementAnswer.objects.get_or_create(
+            aga, _ = AgreementAnswer.objects.get_or_create(
                 user=e_user, question=nfq, selected_choice=AgreementAnswerType.AGR
             )
-            answers.append(get_qa(nfq.id, yna.id))
+            answers.append(get_qa(nfq.id, aga.id))
         for eq in EvolutionQuestion.objects.all():
             sca, _ = EvolutionAnswer.objects.get_or_create(user=e_user, question=eq)
             answers.append(get_qa(eq.id, sca.id))  # Empty answer
@@ -766,7 +766,7 @@ class TestAnswerViewSet:
         self.yna = AgreementAnswer.objects.create(
             user=self.anakin,
             question=Question.objects.filter(pk=1).first(),
-            selected_choice=AgreementAnswerType.SAGR,
+            selected_choice=AgreementAnswerType.AGR,
             justify_answer="Laboris proident enim dolore ullamco voluptate nisi labore laborum ut qui adipisicing occaecat exercitation culpa.",
         )
         self.sca = EvolutionAnswer.objects.create(
@@ -787,7 +787,7 @@ class TestAnswerViewSet:
                 "id": 1,
                 "user": 3,
                 "question": 1,
-                "selected_choice": "N",
+                "selected_choice": str(AgreementAnswerType.AGR),
                 "justify_answer": "Laboris proident enim dolore ullamco voluptate nisi labore laborum ut qui adipisicing occaecat exercitation culpa.",
             },
             EvolutionAnswer: {
@@ -896,7 +896,7 @@ class TestAnswerViewSet:
             pytest.param(
                 dict(
                     question="1",
-                    selected_choice="NAND",
+                    selected_choice=str(AgreementAnswerType.DIS),
                     justify_answer="Deserunt et velit ad occaecat qui.",
                 ),
                 id="Agreement [National Framework] answer",
@@ -904,7 +904,7 @@ class TestAnswerViewSet:
             pytest.param(
                 dict(
                     question="6",
-                    selected_choice="SDIS",
+                    selected_choice=str(AgreementAnswerType.SDIS),
                     justify_answer="Deserunt et velit ad occaecat qui.",
                 ),
                 id="Agreement [Key Agency Actions] answer",
