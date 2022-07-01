@@ -5,11 +5,11 @@ from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory
 
 from epic_app.models.epic_answers import (
+    AgreementAnswer,
+    AgreementAnswerType,
     Answer,
+    EvolutionAnswer,
     MultipleChoiceAnswer,
-    SingleChoiceAnswer,
-    YesNoAnswer,
-    YesNoAnswerType,
 )
 from epic_app.models.epic_questions import (
     EvolutionChoiceType,
@@ -20,10 +20,10 @@ from epic_app.models.epic_questions import (
 from epic_app.models.epic_user import EpicOrganization, EpicUser
 from epic_app.models.models import Program
 from epic_app.serializers.answer_serializer import (
+    AgreementAnswerSerializer,
     AnswerSerializer,
+    EvolutionAnswerSerializer,
     MultipleChoiceAnswerSerializer,
-    SingleChoiceAnswerSerializer,
-    YesNoAnswerSerializer,
     _BaseAnswerSerializer,
 )
 from epic_app.tests import django_postgresql_db
@@ -49,13 +49,13 @@ def answer_serializer_fixture(
     nfq = NationalFrameworkQuestion.objects.all().first()
     evq = EvolutionQuestion.objects.all().first()
     lkq = LinkagesQuestion.objects.all().first()
-    yna = YesNoAnswer.objects.create(
+    yna = AgreementAnswer.objects.create(
         user=theonewhoasks,
         question=nfq,
-        short_answer=YesNoAnswerType.YES,
+        selected_choice=AgreementAnswerType.AGR,
         justify_answer="Velit ex cupidatat do magna ipsum.",
     )
-    sca = SingleChoiceAnswer.objects.create(
+    sca = EvolutionAnswer.objects.create(
         user=theonewhoasks,
         question=evq,
         selected_choice=EvolutionChoiceType.ENGAGED,
@@ -68,15 +68,15 @@ def answer_serializer_fixture(
     selected_programs = [Program.objects.all()[2], Program.objects.all()[4]]
     mca.selected_programs.add(*selected_programs)
     return {
-        YesNoAnswer: {
+        AgreementAnswer: {
             "url": "http://testserver/api/answer/1/",
             "id": yna.id,
             "user": theonewhoasks.id,
             "question": nfq.id,
-            "short_answer": str(YesNoAnswerType.YES),
+            "selected_choice": str(AgreementAnswerType.AGR),
             "justify_answer": "Velit ex cupidatat do magna ipsum.",
         },
-        SingleChoiceAnswer: {
+        EvolutionAnswer: {
             "id": sca.id,
             "justify_answer": "Ipsum anim fugiat sit nostrud enim.",
             "question": evq.id,
@@ -155,12 +155,12 @@ class TestAnswerSerializer:
         "serializer, answer_type",
         [
             pytest.param(
-                YesNoAnswerSerializer,
-                YesNoAnswer,
+                AgreementAnswerSerializer,
+                AgreementAnswer,
             ),
             pytest.param(
-                SingleChoiceAnswerSerializer,
-                SingleChoiceAnswer,
+                EvolutionAnswerSerializer,
+                EvolutionAnswer,
             ),
             pytest.param(
                 MultipleChoiceAnswerSerializer,

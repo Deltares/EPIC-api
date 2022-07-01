@@ -7,16 +7,16 @@ from django.http import FileResponse
 from rest_framework.test import APIClient
 
 from epic_app.models.epic_answers import (
+    AgreementAnswer,
+    AgreementAnswerType,
+    EvolutionAnswer,
     MultipleChoiceAnswer,
-    SingleChoiceAnswer,
-    YesNoAnswer,
-    YesNoAnswerType,
 )
 from epic_app.models.epic_questions import (
+    AgreementQuestion,
     EvolutionChoiceType,
     EvolutionQuestion,
     LinkagesQuestion,
-    YesNoQuestion,
 )
 from epic_app.models.epic_user import EpicOrganization, EpicUser
 from epic_app.models.models import Program
@@ -66,16 +66,16 @@ def _report_fixture(full_epic_domain_data: pytest.fixture):
     select_programs_b = set(random.choices(list(program_list - select_programs_a), k=6))
     select_programs_c = set(list(select_programs_a) + list(select_programs_b))
 
-    def answer_yes_no(sel_user: EpicUser, yn_question: YesNoQuestion):
-        YesNoAnswer.objects.create(
+    def answer_yes_no(sel_user: EpicUser, yn_question: AgreementQuestion):
+        AgreementAnswer.objects.create(
             user=sel_user,
             question=yn_question,
-            short_answer=random.choice(list(YesNoAnswerType)),
+            selected_choice=random.choice(list(AgreementAnswerType)),
             justify_answer=random.choice(justify_answer_list),
         )
 
     def answer_singlechoice(sel_user: EpicUser, sc_question: EvolutionQuestion):
-        SingleChoiceAnswer.objects.create(
+        EvolutionAnswer.objects.create(
             user=sel_user,
             question=sc_question,
             selected_choice=random.choice(list(EvolutionChoiceType)),
@@ -97,7 +97,7 @@ def _report_fixture(full_epic_domain_data: pytest.fixture):
         for p in program_list:
             for p_question in p.questions.all():
                 q_instance = get_instance_as_submodel_type(p_question)
-                if isinstance(q_instance, YesNoAnswer):
+                if isinstance(q_instance, AgreementAnswer):
                     [answer_yes_no(sel_user, q_instance) for sel_user in user_list]
                 if isinstance(q_instance, EvolutionQuestion):
                     [

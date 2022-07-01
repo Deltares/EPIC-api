@@ -5,11 +5,11 @@ import pytest
 from django.db import IntegrityError
 
 from epic_app.models.epic_answers import (
+    AgreementAnswer,
+    AgreementAnswerType,
     Answer,
+    EvolutionAnswer,
     MultipleChoiceAnswer,
-    SingleChoiceAnswer,
-    YesNoAnswer,
-    YesNoAnswerType,
 )
 from epic_app.models.epic_questions import (
     EvolutionChoiceType,
@@ -50,12 +50,12 @@ class TestEpicAnswers:
 
     answer_ctor: dict = {
         MultipleChoiceAnswer: dict(),
-        SingleChoiceAnswer: dict(
+        EvolutionAnswer: dict(
             selected_choice=EvolutionChoiceType.NASCENT,
             justify_answer="Magna laboris ex Lorem dolor mollit eiusmod occaecat deserunt reprehenderit labore velit ad excepteur.",
         ),
-        YesNoAnswer: dict(
-            short_answer=YesNoAnswerType.NO,
+        AgreementAnswer: dict(
+            selected_choice=AgreementAnswerType.DIS,
             justify_answer="Magna laboris ex Lorem dolor mollit eiusmod occaecat deserunt reprehenderit labore velit ad excepteur.",
         ),
     }
@@ -137,9 +137,9 @@ class TestEpicAnswers:
     @pytest.mark.parametrize(
         "question_subtype, answer_subtype",
         [
-            pytest.param(NationalFrameworkQuestion, YesNoAnswer),
-            pytest.param(KeyAgencyActionsQuestion, YesNoAnswer),
-            pytest.param(EvolutionQuestion, SingleChoiceAnswer),
+            pytest.param(NationalFrameworkQuestion, AgreementAnswer),
+            pytest.param(KeyAgencyActionsQuestion, AgreementAnswer),
+            pytest.param(EvolutionQuestion, EvolutionAnswer),
             pytest.param(LinkagesQuestion, MultipleChoiceAnswer),
         ],
     )
@@ -154,7 +154,7 @@ class TestEpicAnswers:
 
 
 @pytest.mark.django_db
-class TestSingleChoiceAnswer:
+class TestEvolutionAnswer:
     @pytest.mark.parametrize(
         "selected_choice, expected_result",
         [
@@ -180,16 +180,16 @@ class TestSingleChoiceAnswer:
             pytest.param("Lorem ipsum", id="Justification filled"),
         ],
     )
-    def test_singlechoiceanswer_is_valid_answer(
+    def test_evolutionanswer_is_valid_answer(
         self,
         selected_choice: Optional[EvolutionChoiceType],
         justify_answer: Optional[str],
         expected_result: bool,
     ):
         an_user: EpicUser = EpicUser.objects.first()
-        SingleChoiceAnswer.objects.all().delete()
+        EvolutionAnswer.objects.all().delete()
         an_evolution_question = EvolutionQuestion.objects.first()
-        sca = SingleChoiceAnswer.objects.create(
+        sca = EvolutionAnswer.objects.create(
             user=an_user, question=an_evolution_question
         )
         sca.selected_choice = selected_choice
@@ -201,13 +201,13 @@ class TestSingleChoiceAnswer:
         "selected_choice",
         EvolutionChoiceType,
     )
-    def test_singlechoiceanswer_get_detailed_summary(
+    def test_evolutionanswer_get_detailed_summary(
         self,
         selected_choice: Optional[EvolutionChoiceType],
     ):
         # Define test data
-        SingleChoiceAnswer.objects.all().delete()
-        sca = SingleChoiceAnswer.objects.create(
+        EvolutionAnswer.objects.all().delete()
+        sca = EvolutionAnswer.objects.create(
             user=EpicUser.objects.first(), question=EvolutionQuestion.objects.first()
         )
         justify = "Consequat quis adipisicing culpa veniam aliquip anim amet labore commodo ullamco laborum quis enim in."
@@ -251,8 +251,8 @@ class TestSingleChoiceAnswer:
         }
 
         # Run test
-        return_summary = SingleChoiceAnswer.get_detailed_summary(
-            SingleChoiceAnswer.objects.all()
+        return_summary = EvolutionAnswer.get_detailed_summary(
+            EvolutionAnswer.objects.all()
         )
 
         # Verify expectations
@@ -260,7 +260,7 @@ class TestSingleChoiceAnswer:
 
 
 @pytest.mark.django_db
-class TestYesNoAnswer:
+class TestAgreementAnswer:
     @pytest.mark.parametrize(
         "justify_answer",
         [
@@ -271,66 +271,85 @@ class TestYesNoAnswer:
     @pytest.mark.parametrize(
         "yesno_answer, expected_result",
         [
-            pytest.param(YesNoAnswerType.YES, True, id="Yes answer"),
-            pytest.param(YesNoAnswerType.NO, True, id="No answer"),
+            pytest.param(AgreementAnswerType.SDIS, True, id="Strongly disagree answer"),
+            pytest.param(AgreementAnswerType.DIS, True, id="Disagree answer"),
+            pytest.param(
+                AgreementAnswerType.NAND, True, id="Neither agree nor disagree answer"
+            ),
+            pytest.param(AgreementAnswerType.AGR, True, id="Agree answer"),
+            pytest.param(AgreementAnswerType.SAGR, True, id="Strongly agree answer"),
             pytest.param("", False, id="Empty answer"),
         ],
     )
-    def test_yesnoanswer_is_valid_answer(
+    def test_agreementanswer_is_valid_answer(
         self,
-        yesno_answer: Optional[YesNoAnswerType],
+        yesno_answer: Optional[AgreementAnswerType],
         justify_answer: Optional[str],
         expected_result: bool,
     ):
         an_user: EpicUser = EpicUser.objects.first()
-        YesNoAnswer.objects.all().delete()
+        AgreementAnswer.objects.all().delete()
         a_yn_question = NationalFrameworkQuestion.objects.first()
-        yna = YesNoAnswer.objects.create(user=an_user, question=a_yn_question)
-        yna.short_answer = yesno_answer
+        yna = AgreementAnswer.objects.create(user=an_user, question=a_yn_question)
+        yna.selected_choice = yesno_answer
         yna.justify_answer = justify_answer
         yna.save()
         assert yna.is_valid_answer() == expected_result
 
     @pytest.mark.parametrize(
-        "short_answer",
-        YesNoAnswerType,
+        "selected_choice",
+        AgreementAnswerType,
     )
-    def test_yesnoanswer_get_detailed_summary(
+    def test_agreementanswer_get_detailed_summary(
         self,
-        short_answer: Optional[YesNoAnswerType],
+        selected_choice: Optional[AgreementAnswerType],
     ):
         # Define test data
-        YesNoAnswer.objects.all().delete()
-        sca = YesNoAnswer.objects.create(
+        AgreementAnswer.objects.all().delete()
+        sca = AgreementAnswer.objects.create(
             user=EpicUser.objects.first(),
             question=NationalFrameworkQuestion.objects.first(),
         )
         justify = "Consequat quis adipisicing culpa veniam aliquip anim amet labore commodo ullamco laborum quis enim in."
-        sca.short_answer = short_answer
+        sca.selected_choice = selected_choice
         sca.justify_answer = justify
         sca.save()
 
         # Define exepcted results
-        def _get_result(yn_type) -> int:
-            return 1 if short_answer == yn_type else 0
+        def _get_result(ag_type) -> int:
+            return 1 if selected_choice == ag_type else 0
 
-        def _get_justify(yn_type) -> List[Optional[str]]:
-            return [justify] if short_answer == yn_type else []
+        def _get_justify(ag_type) -> List[Optional[str]]:
+            return [justify] if selected_choice == ag_type else []
 
         expected_result = {
-            str(YesNoAnswerType.YES.label): _get_result(YesNoAnswerType.YES),
-            f"{str(YesNoAnswerType.YES.label)}_justify": _get_justify(
-                YesNoAnswerType.YES
+            str(AgreementAnswerType.SDIS.label): _get_result(AgreementAnswerType.SDIS),
+            f"{str(AgreementAnswerType.SDIS.label)}_justify": _get_justify(
+                AgreementAnswerType.SDIS
             ),
-            str(YesNoAnswerType.NO.label): _get_result(YesNoAnswerType.NO),
-            f"{str(YesNoAnswerType.NO.label)}_justify": _get_justify(
-                YesNoAnswerType.NO
+            str(AgreementAnswerType.DIS.label): _get_result(AgreementAnswerType.DIS),
+            f"{str(AgreementAnswerType.DIS.label)}_justify": _get_justify(
+                AgreementAnswerType.DIS
+            ),
+            str(AgreementAnswerType.NAND.label): _get_result(AgreementAnswerType.NAND),
+            f"{str(AgreementAnswerType.NAND.label)}_justify": _get_justify(
+                AgreementAnswerType.NAND
+            ),
+            str(AgreementAnswerType.AGR.label): _get_result(AgreementAnswerType.AGR),
+            f"{str(AgreementAnswerType.AGR.label)}_justify": _get_justify(
+                AgreementAnswerType.AGR
+            ),
+            str(AgreementAnswerType.SAGR.label): _get_result(AgreementAnswerType.SAGR),
+            f"{str(AgreementAnswerType.SAGR.label)}_justify": _get_justify(
+                AgreementAnswerType.SAGR
             ),
             "no_valid_response": 0,
         }
 
         # Run test
-        return_summary = YesNoAnswer.get_detailed_summary(YesNoAnswer.objects.all())
+        return_summary = AgreementAnswer.get_detailed_summary(
+            AgreementAnswer.objects.all()
+        )
 
         # Verify expectations
         assert return_summary == expected_result

@@ -7,11 +7,11 @@ from rest_framework.request import Request
 from rest_framework.test import APIRequestFactory
 
 from epic_app.models.epic_answers import (
+    AgreementAnswer,
+    AgreementAnswerType,
     Answer,
+    EvolutionAnswer,
     MultipleChoiceAnswer,
-    SingleChoiceAnswer,
-    YesNoAnswer,
-    YesNoAnswerType,
 )
 from epic_app.models.epic_questions import (
     EvolutionChoiceType,
@@ -54,13 +54,13 @@ def _report_serializer_fixture(
     epic_test_db: pytest.fixture,
 ) -> None:
     anakin = EpicUser.objects.filter(username="Anakin").first()
-    yna = YesNoAnswer.objects.create(
+    aga = AgreementAnswer.objects.create(
         user=anakin,
         question=Question.objects.filter(pk=1).first(),
-        short_answer=YesNoAnswerType.NO,
+        selected_choice=AgreementAnswerType.DIS,
         justify_answer="Laboris proident enim dolore ullamco voluptate nisi labore laborum ut qui adipisicing occaecat exercitation culpa.",
     )
-    sca = SingleChoiceAnswer.objects.create(
+    sca = EvolutionAnswer.objects.create(
         user=anakin,
         question=Question.objects.filter(pk=3).first(),
         selected_choice=EvolutionChoiceType.EFFECTIVE,
@@ -81,14 +81,14 @@ class TestAnswerReportSerializer:
         assert isinstance(serializer, serializers.BaseSerializer)
 
     expected_answer_dict = {
-        YesNoAnswer: {
+        AgreementAnswer: {
             "id": 1,
-            "short_answer": "N",
+            "selected_choice": "N",
             "justify_answer": "Laboris proident enim dolore ullamco voluptate nisi labore laborum ut qui adipisicing occaecat exercitation culpa.",
             "user": 3,
             "question": 1,
         },
-        SingleChoiceAnswer: {
+        EvolutionAnswer: {
             "id": 2,
             "selected_choice": "EFFECTIVE",
             "justify_answer": "Ea ut ipsum deserunt culpa laborum excepteur laboris ad adipisicing ad officia laboris.",
@@ -119,8 +119,10 @@ class TestAnswerReportSerializer:
 class TestAnswerListReportSerializer:
 
     expected_answer_list_dict = {
-        YesNoAnswer: {
-            "answers": [TestAnswerReportSerializer.expected_answer_dict[YesNoAnswer]],
+        AgreementAnswer: {
+            "answers": [
+                TestAnswerReportSerializer.expected_answer_dict[AgreementAnswer]
+            ],
             "summary": {
                 "Yes": 0,
                 "Yes_justify": [],
@@ -131,9 +133,9 @@ class TestAnswerListReportSerializer:
                 "no_valid_response": 2,
             },
         },
-        SingleChoiceAnswer: {
+        EvolutionAnswer: {
             "answers": [
-                TestAnswerReportSerializer.expected_answer_dict[SingleChoiceAnswer],
+                TestAnswerReportSerializer.expected_answer_dict[EvolutionAnswer],
             ],
             "summary": {
                 "Capable": 0,
@@ -196,7 +198,7 @@ class TestQuestionReportSerializer:
             "id": 1,
             "title": "Is this a National Framework question?",
             "question_answers": TestAnswerListReportSerializer.expected_answer_list_dict[
-                YesNoAnswer
+                AgreementAnswer
             ],
         },
         EvolutionQuestion: {
@@ -204,7 +206,7 @@ class TestQuestionReportSerializer:
             "id": 3,
             "title": "Is this an Evolution question?",
             "question_answers": TestAnswerListReportSerializer.expected_answer_list_dict[
-                SingleChoiceAnswer
+                EvolutionAnswer
             ],
         },
         LinkagesQuestion: {
