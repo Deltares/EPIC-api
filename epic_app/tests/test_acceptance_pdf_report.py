@@ -66,15 +66,15 @@ def _report_fixture(full_epic_domain_data: pytest.fixture):
     select_programs_b = set(random.choices(list(program_list - select_programs_a), k=6))
     select_programs_c = set(list(select_programs_a) + list(select_programs_b))
 
-    def answer_yes_no(sel_user: EpicUser, yn_question: AgreementQuestion):
+    def answer_agreement(sel_user: EpicUser, ag_question: AgreementQuestion):
         AgreementAnswer.objects.create(
             user=sel_user,
-            question=yn_question,
+            question=ag_question,
             selected_choice=random.choice(list(AgreementAnswerType)),
             justify_answer=random.choice(justify_answer_list),
         )
 
-    def answer_singlechoice(sel_user: EpicUser, sc_question: EvolutionQuestion):
+    def answer_evolution(sel_user: EpicUser, sc_question: EvolutionQuestion):
         EvolutionAnswer.objects.create(
             user=sel_user,
             question=sc_question,
@@ -97,13 +97,10 @@ def _report_fixture(full_epic_domain_data: pytest.fixture):
         for p in program_list:
             for p_question in p.questions.all():
                 q_instance = get_instance_as_submodel_type(p_question)
-                if isinstance(q_instance, AgreementAnswer):
-                    [answer_yes_no(sel_user, q_instance) for sel_user in user_list]
+                if isinstance(q_instance, AgreementQuestion):
+                    [answer_agreement(sel_user, q_instance) for sel_user in user_list]
                 if isinstance(q_instance, EvolutionQuestion):
-                    [
-                        answer_singlechoice(sel_user, q_instance)
-                        for sel_user in user_list
-                    ]
+                    [answer_evolution(sel_user, q_instance) for sel_user in user_list]
                 if isinstance(q_instance, LinkagesQuestion):
                     [
                         answer_multiple_choice(sel_user, q_instance)
