@@ -142,3 +142,9 @@ class TestProgram:
             == f"There's already a Program with the name: {a_name}."
         )
         assert not Program.objects.filter(name=name_case).exists()
+
+    def test_program_can_have_multiple_agencies(self):
+        program: Program = Program.objects.filter(name="e").first()
+        for agency in Agency.objects.all():
+            program.agencies.add(agency)
+        assert program.agencies.count() == Agency.objects.count()
