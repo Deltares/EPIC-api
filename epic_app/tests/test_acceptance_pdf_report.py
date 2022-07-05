@@ -1,3 +1,4 @@
+import json
 import random
 from typing import List
 
@@ -122,15 +123,25 @@ def _report_fixture(full_epic_domain_data: pytest.fixture):
 
 
 @pytest.mark.django_db
-class TestGeneratePdfReport:
-    url_root = "/api/epicorganization/report-pdf/"
+class TestGenerateReport:
+    url_root = "/api/epicorganization/"
 
-    def test_RETRIEVE_pdf_report_As_Advisor_epic_user(
+    def test_RETRIEVE_raw_report_as_advisor_epic_user(
+        self, _report_fixture: dict, api_client: APIClient
+    ):
+        set_user_auth_token(api_client, "advisor_test")
+        response = api_client.get(self.url_root + "report/")
+        assert response.status_code == 200
+        json_output = test_data_dir / "report_raw.json"
+        json_text = json.dumps(response.data, indent=4)
+        json_output.write_text(json_text)
+
+    def test_RETRIEVE_pdf_report_as_advisor_epic_user(
         self, _report_fixture: dict, api_client: APIClient
     ):
         # Run request
         set_user_auth_token(api_client, "advisor_test")
-        response: FileResponse = api_client.get(self.url_root)
+        response: FileResponse = api_client.get(self.url_root + "report-pdf/")
 
         # Verify final expectations
         assert response.status_code == 200
