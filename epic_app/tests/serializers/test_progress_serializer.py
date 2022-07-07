@@ -3,7 +3,7 @@ from multiprocessing.sharedctypes import Value
 import pytest
 from rest_framework import serializers
 
-from epic_app.models.epic_answers import YesNoAnswer
+from epic_app.models.epic_answers import AgreementAnswer
 from epic_app.models.epic_questions import NationalFrameworkQuestion, Question
 from epic_app.models.epic_user import EpicUser
 from epic_app.models.models import Program
@@ -23,7 +23,7 @@ class TestQuestionAnswerSerializer:
     def test_to_representation_valid_instance(self, epic_test_db):
         q_instance = NationalFrameworkQuestion.objects.first()
         a_user = EpicUser.objects.first()
-        a_instance, _ = YesNoAnswer.objects.get_or_create(
+        a_instance, _ = AgreementAnswer.objects.get_or_create(
             question=q_instance, user=a_user
         )
         serializer = _QuestionAnswerSerializer()
@@ -33,7 +33,7 @@ class TestQuestionAnswerSerializer:
     def test_to_representation_invalid_question(self, epic_test_db):
         q_instance = NationalFrameworkQuestion.objects.first()
         a_user = EpicUser.objects.first()
-        a_instance, _ = YesNoAnswer.objects.get_or_create(
+        a_instance, _ = AgreementAnswer.objects.get_or_create(
             question=q_instance, user=a_user
         )
         serializer = _QuestionAnswerSerializer()

@@ -9,9 +9,9 @@ from epic_app.admin_models.import_entity_admin import (
     NfqAdmin,
 )
 from epic_app.models.epic_answers import (
+    AgreementAnswer,
+    EvolutionAnswer,
     MultipleChoiceAnswer,
-    SingleChoiceAnswer,
-    YesNoAnswer,
 )
 from epic_app.models.epic_questions import (
     EvolutionQuestion,
@@ -33,6 +33,6 @@ admin.site.register(NationalFrameworkQuestion, NfqAdmin)
 admin.site.register(KeyAgencyActionsQuestion, KaaAdmin)
 admin.site.register(EvolutionQuestion, EvoAdmin)
 admin.site.register(LinkagesQuestion, LnkAdmin)
-admin.site.register(YesNoAnswer)
-admin.site.register(SingleChoiceAnswer)
+admin.site.register(AgreementAnswer)
+admin.site.register(EvolutionAnswer)
 admin.site.register(MultipleChoiceAnswer)

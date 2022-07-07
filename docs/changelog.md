@@ -1,3 +1,10 @@
+## v1.1.0 (2022-07-01)
+
+### Feat
+
+- Replace yes/no with agreement options.
+- Refactor code to replace yes/no question-answer to a 'agreement' range of answers
+
 ## v1.0.0 (2022-06-24)
 
 ### Feat

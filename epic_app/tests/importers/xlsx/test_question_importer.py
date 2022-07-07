@@ -38,7 +38,7 @@ class TestYesNoJustifyQuestionImporter:
     }
 
     @pytest.mark.parametrize("question_type", question_type_dict.keys())
-    def test_yesnoquestion_type_importer(
+    def test_agreementquestion_type_importer(
         self, question_type: _YesNoJustifyQuestionImporter
     ):
         domain_importer = question_type()

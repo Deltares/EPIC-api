@@ -1,3 +1,4 @@
+import json
 import random
 from typing import List
 
@@ -7,16 +8,16 @@ from django.http import FileResponse
 from rest_framework.test import APIClient
 
 from epic_app.models.epic_answers import (
+    AgreementAnswer,
+    AgreementAnswerType,
+    EvolutionAnswer,
     MultipleChoiceAnswer,
-    SingleChoiceAnswer,
-    YesNoAnswer,
-    YesNoAnswerType,
 )
 from epic_app.models.epic_questions import (
+    AgreementQuestion,
     EvolutionChoiceType,
     EvolutionQuestion,
     LinkagesQuestion,
-    YesNoQuestion,
 )
 from epic_app.models.epic_user import EpicOrganization, EpicUser
 from epic_app.models.models import Program
@@ -66,16 +67,16 @@ def _report_fixture(full_epic_domain_data: pytest.fixture):
     select_programs_b = set(random.choices(list(program_list - select_programs_a), k=6))
     select_programs_c = set(list(select_programs_a) + list(select_programs_b))
 
-    def answer_yes_no(sel_user: EpicUser, yn_question: YesNoQuestion):
-        YesNoAnswer.objects.create(
+    def answer_agreement(sel_user: EpicUser, ag_question: AgreementQuestion):
+        AgreementAnswer.objects.create(
             user=sel_user,
-            question=yn_question,
-            short_answer=random.choice(list(YesNoAnswerType)),
+            question=ag_question,
+            selected_choice=random.choice(list(AgreementAnswerType)),
             justify_answer=random.choice(justify_answer_list),
         )
 
-    def answer_singlechoice(sel_user: EpicUser, sc_question: EvolutionQuestion):
-        SingleChoiceAnswer.objects.create(
+    def answer_evolution(sel_user: EpicUser, sc_question: EvolutionQuestion):
+        EvolutionAnswer.objects.create(
             user=sel_user,
             question=sc_question,
             selected_choice=random.choice(list(EvolutionChoiceType)),
@@ -97,13 +98,10 @@ def _report_fixture(full_epic_domain_data: pytest.fixture):
         for p in program_list:
             for p_question in p.questions.all():
                 q_instance = get_instance_as_submodel_type(p_question)
-                if isinstance(q_instance, YesNoAnswer):
-                    [answer_yes_no(sel_user, q_instance) for sel_user in user_list]
+                if isinstance(q_instance, AgreementQuestion):
+                    [answer_agreement(sel_user, q_instance) for sel_user in user_list]
                 if isinstance(q_instance, EvolutionQuestion):
-                    [
-                        answer_singlechoice(sel_user, q_instance)
-                        for sel_user in user_list
-                    ]
+                    [answer_evolution(sel_user, q_instance) for sel_user in user_list]
                 if isinstance(q_instance, LinkagesQuestion):
                     [
                         answer_multiple_choice(sel_user, q_instance)
@@ -125,15 +123,25 @@ def _report_fixture(full_epic_domain_data: pytest.fixture):
 
 
 @pytest.mark.django_db
-class TestGeneratePdfReport:
-    url_root = "/api/epicorganization/report-pdf/"
+class TestGenerateReport:
+    url_root = "/api/epicorganization/"
 
-    def test_RETRIEVE_pdf_report_As_Advisor_epic_user(
+    def test_RETRIEVE_raw_report_as_advisor_epic_user(
+        self, _report_fixture: dict, api_client: APIClient
+    ):
+        set_user_auth_token(api_client, "advisor_test")
+        response = api_client.get(self.url_root + "report/")
+        assert response.status_code == 200
+        json_output = test_data_dir / "report_raw.json"
+        json_text = json.dumps(response.data, indent=4)
+        json_output.write_text(json_text)
+
+    def test_RETRIEVE_pdf_report_as_advisor_epic_user(
         self, _report_fixture: dict, api_client: APIClient
     ):
         # Run request
         set_user_auth_token(api_client, "advisor_test")
-        response: FileResponse = api_client.get(self.url_root)
+        response: FileResponse = api_client.get(self.url_root + "report-pdf/")
 
         # Verify final expectations
         assert response.status_code == 200

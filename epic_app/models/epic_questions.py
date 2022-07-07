@@ -20,7 +20,7 @@ class Question(models.Model):
         return self.title[0:15]
 
 
-class YesNoQuestion(Question):
+class AgreementQuestion(Question):
     description: str = models.TextField(null=False, blank=False)
 
     class Meta:
@@ -29,17 +29,17 @@ class YesNoQuestion(Question):
         unique_together = []
 
 
-class NationalFrameworkQuestion(YesNoQuestion):
+class NationalFrameworkQuestion(AgreementQuestion):
     """
-    Question of type Yes / No and Justify.
+    Question of type 'Agreement' and Justify.
     """
 
     pass
 
 
-class KeyAgencyActionsQuestion(YesNoQuestion):
+class KeyAgencyActionsQuestion(AgreementQuestion):
     """
-    Question of type Yes / No and Justify.
+    Question of type 'Agreement' and Justify.
     """
 
     pass

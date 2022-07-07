@@ -2,7 +2,7 @@ import pytest
 
 from epic_app.importers.xlsx import BaseEpicImporter, EpicAgencyImporter
 from epic_app.importers.xlsx.base_importer import ProtocolEpicImporter
-from epic_app.models.models import Agency
+from epic_app.models.models import Agency, Program
 from epic_app.tests import test_data_dir
 from epic_app.tests.importers import default_epic_domain_data
 
@@ -33,3 +33,9 @@ class TestEpicAgencyImporter:
 
         # Verify the initial data has been removed.
         assert dummy_agency not in Agency.objects.all()
+        multiple_agency_programs = [
+            p for p in Program.objects.all() if p.agencies.count() > 1
+        ]
+        assert (
+            multiple_agency_programs
+        ), "There should have been programs with more than one agency."
